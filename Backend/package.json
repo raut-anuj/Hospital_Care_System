@@ -1,0 +1,35 @@
+{
+  "name": "health_care_backend",
+  "version": "1.0.0",
+  "description": "Hospital backend sysytem",
+  "homepage": "https://github.com/raut-anuj/Health_care_backend#readme",
+  "bugs": {
+    "url": "https://github.com/raut-anuj/Health_care_backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raut-anuj/Health_care_backend.git"
+  },
+  "license": "ISC",
+  "author": "Anuj Kumar",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11",
+    "prettier": "^3.8.0"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.9.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.4",
+    "multer": "^2.0.2"
+  }
+}
