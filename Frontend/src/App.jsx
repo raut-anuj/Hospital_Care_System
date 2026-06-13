@@ -68,11 +68,29 @@ export default function App() {
         <Route index element={<PatientDashboard />} />
         <Route path="appointment" element={<PatientAppointment />} />
       </Route>
-
       <Route path="/unauthorized" element={<Unauthorized />} />
+
     </Routes>
   );
 }
 
 //       <Route path="patients" element={<Patients />} />
 //         <Route path="appointments" element={<Appointments />} />
+
+// <Route path="/admin" element={<AdminLayout />}>
+//   <Route index element={<Dashboard />} />
+//   <Route path="doctors" element={<Doctors />} />
+//   <Route path="patients" element={<Patients />} />
+//   <Route path="appointments" element={<AdminAppointments />} />
+// </Route>
+
+// <Route path="/doctor" element={<DoctorLayout />}>
+//   <Route index element={<DoctorDashboard />} />
+//   <Route path="AppointmentList" element={<AppointmentList />} />
+//   <Route path="ScheduleAppointment" element={<ScheduleAppointment />} />
+// </Route>
+
+// <Route path="/patient" element={<PatientLayout />}>
+//   <Route index element={<PatientDashboard />} />
+//   <Route path="appointment" element={<PatientAppointment />} />
+// </Route>
