@@ -1,0 +1,74 @@
+.schedule-appointment-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+  padding: 1.5rem;
+  color: #111827;
+}
+
+.schedule-appointment-page__title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.schedule-appointment-page__table-wrap {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.schedule-appointment-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.schedule-appointment-page__thead {
+  background: #f3f4f6;
+}
+
+.schedule-appointment-page__table th,
+.schedule-appointment-page__table td {
+  padding: 0.75rem 1rem;
+}
+
+.schedule-appointment-page__row {
+  border-top: 1px solid #e5e7eb;
+}
+
+.schedule-appointment-page__status {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.schedule-appointment-page__status--completed { background: #dcfce7; color: #166534; }
+.schedule-appointment-page__status--scheduled { background: #dbeafe; color: #1d4ed8; }
+.schedule-appointment-page__status--default { background: #fee2e2; color: #b91c1c; }
+
+.schedule-appointment-page__empty {
+  text-align: center;
+  color: #6b7280;
+  padding: 1rem;
+}
+
+.schedule-appointment-page__list {
+  display: grid;
+  gap: 1rem;
+}
+
+.schedule-appointment-page__list-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 16px -10px rgba(15, 23, 42, 0.2);
+  padding: 1rem 1.25rem;
+}
+
+.schedule-appointment-page__list-card h3,
+.schedule-appointment-page__list-card p {
+  margin: 0.2rem 0;
+}

@@ -1,0 +1,43 @@
+.button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.button--text-white {
+  color: #fff;
+}
+
+.button--text-blue {
+  color: #2563eb;
+}
+
+.button--bg-blue {
+  background: #2563eb;
+}
+
+.button--bg-blue:hover {
+  background: #1d4ed8;
+}
+
+.button--bg-white {
+  background: #fff;
+  border: 1px solid #d1d5db;
+}
+
+.button--bg-white:hover {
+  background: #f8fafc;
+}
+
+.button--bg-black {
+  background: #111827;
+  color: #1d4ed8;
+}
+
+.button--bg-black:hover {
+  background: #000;
+}

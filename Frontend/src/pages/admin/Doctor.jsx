@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./Doctor.css";
 
 export default function Doctors() {
   const [list, setList] = useState([]);
@@ -12,8 +13,6 @@ export default function Doctors() {
         );
 
         const data = await res.json();
-        // console.log(data?.data);
-
         setList(data?.data || []);
       } catch (err) {
         console.log("Error ", err);
@@ -22,68 +21,45 @@ export default function Doctors() {
     fetchList();
   }, []);
 
-  // Search filter + Alphabetical sort
   const filteredDoctors = list
-  .filter((doc) =>
-    doc.drname?.toLowerCase().includes(search.toLowerCase())
-  )
-  .sort((a, b) => a.drname.localeCompare(b.drname));
-  
+    .filter((doc) => doc.drname?.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => a.drname.localeCompare(b.drname));
 
   return (
-    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-      {/* Header */}
-      <h2 className="text-3xl font-semibold mb-6 text-gray-800 dark:text-white">
-        Doctor List
-      </h2>
+    <div className="doctor-page">
+      <h2 className="doctor-page__title">Doctor List</h2>
 
-      {/* Search */}
       <input
         type="text"
         placeholder="Search doctor..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-4 p-2 border rounded-lg 
-        bg-white text-black border-gray-300
-        dark:bg-gray-800 dark:text-white dark:border-gray-600"
+        className="doctor-page__search"
       />
 
-      {/* Table View */}
-      <div className="bg-white dark:bg-gray-800 shadow rounded-xl overflow-hidden mb-8">
-        <table className="w-full text-left">
-          <thead className="bg-gray-100 dark:bg-gray-700">
+      <div className="doctor-page__table-wrap">
+        <table className="doctor-page__table">
+          <thead className="doctor-page__thead">
             <tr>
-              <th className="p-3 text-gray-700 dark:text-gray-200">ID</th>
-              <th className="text-gray-700 dark:text-gray-200">Doctor Name</th>
-              <th className="text-gray-700 dark:text-gray-200">Specialization</th>
-              <th className="text-gray-700 dark:text-gray-200">Qualification</th>
+              <th>ID</th>
+              <th>Doctor Name</th>
+              <th>Specialization</th>
+              <th>Qualification</th>
             </tr>
           </thead>
           <tbody>
             {filteredDoctors.length > 0 ? (
               filteredDoctors.map((doc, index) => (
-                <tr
-                  key={doc._id || index}
-                  className="border-t hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
-                  <td className="p-3 text-gray-800 dark:text-gray-100">
-                    {index + 1}
-                  </td>
-                  <td className="text-gray-800 dark:text-gray-100">{doc.drname}</td>
-                  <td className="text-gray-800 dark:text-gray-100">
-                    {doc.specialization || "N/A"}
-                  </td>
-                  <td className="text-gray-800 dark:text-gray-100">
-                    {doc.qualification || "N/A"}
-                  </td>
+                <tr key={doc._id || index} className="doctor-page__row">
+                  <td>{index + 1}</td>
+                  <td>{doc.drname}</td>
+                  <td>{doc.specialization || "N/A"}</td>
+                  <td>{doc.qualification || "N/A"}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="4"
-                  className="text-center p-3 text-gray-500 dark:text-gray-400"
-                >
+                <td colSpan="4" className="doctor-page__empty">
                   No Doctor found
                 </td>
               </tr>
@@ -92,29 +68,17 @@ export default function Doctors() {
         </table>
       </div>
 
-      {/* List View */}
-      <div className="space-y-4">
+      <div className="doctor-page__list">
         {filteredDoctors.length > 0 ? (
           filteredDoctors.map((doc) => (
-            <div
-              key={doc._id || doc.id}
-              className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow"
-            >
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                {doc.drname}
-              </h3>
-              <p className="text-gray-700 dark:text-gray-200">
-                Specialization: {doc.specialization || "N/A"}
-              </p>
-              <p className="text-gray-700 dark:text-gray-200">
-                Qualification: {doc.qualification || "N/A"}
-              </p>
+            <div key={doc._id || doc.id} className="doctor-page__list-card">
+              <h3 className="doctor-page__list-name">{doc.drname}</h3>
+              <p>Specialization: {doc.specialization || "N/A"}</p>
+              <p>Qualification: {doc.qualification || "N/A"}</p>
             </div>
           ))
         ) : (
-          <div className="text-center p-3 text-gray-500 dark:text-gray-400">
-            No doctors found
-          </div>
+          <div className="doctor-page__empty doctor-page__empty--block">No doctors found</div>
         )}
       </div>
     </div>

@@ -1,0 +1,10 @@
+.patient-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.patient-layout__main {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}

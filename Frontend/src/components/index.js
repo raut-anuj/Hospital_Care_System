@@ -3,6 +3,9 @@ import Input from './Input'
 import Login from './Login'
 import Signup from './Signup'
 import Home from '../pages/Home'
+import About from '../pages/About'
+import Doctors from '../pages/Doctors'
+import Contact from '../pages/Contact'
 import Card from '../components/Card'
 import Footer from '../components/Footer/Footer'
 import ForgotPassword from '../components/ForgotPassword'
@@ -11,7 +14,7 @@ import ForgotPassword from '../components/ForgotPassword'
 import Navbar from "../components/admin/Navbar"
 import Sidebar from '../components/admin/Sidebar'
 import DoctorSidebar from "../components/doctor/DoctorSidebar"
-import PatientSidebar from "../components/paient/PatientSidebar"
+import PatientSidebar from "../components/patient/PatientSidebar"
 
 import Header from "../components/Header/Header"
 
@@ -20,7 +23,7 @@ import DoctorLayout from "../layout/DoctorLayout"
 import PatientLayout from "../layout/PatientLayout"
 
 import Dashboard from "../pages/admin/Dashboard";
-import Doctors from "../pages/admin/Doctor";
+import AdminDoctors from "../pages/admin/Doctor";
 import Patients from "../pages/admin/Patient";
 import AdminAppointments from "../pages/admin/Apointment"
 
@@ -37,6 +40,9 @@ import Unauthorized from  "../pages/Unauthorized.jsx"
 
 export {
     Home,
+    About,
+    Doctors,
+    Contact,
     Button,
     Footer,
     Input,
@@ -61,7 +67,7 @@ export {
 
     //pages--->admin
     Dashboard,
-    Doctors,
+    AdminDoctors,
     Patients,
     AdminAppointments,
 

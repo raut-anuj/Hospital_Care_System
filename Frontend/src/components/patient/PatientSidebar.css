@@ -1,0 +1,99 @@
+.patient-sidebar {
+  width: 16rem;
+  height: 100vh;
+  background: linear-gradient(to bottom, #14532d, #16a34a 50%, #166534);
+  color: #fff;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.5);
+  display: flex;
+  flex-direction: column;
+  transition: color 0.3s ease;
+}
+
+.dark .patient-sidebar {
+  background: linear-gradient(to bottom, #111827, #1f2937 50%, #374151);
+}
+
+.patient-sidebar__brand {
+  display: block;
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.patient-sidebar__brand:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark .patient-sidebar__brand:hover {
+  background: rgba(55, 65, 81, 0.7);
+}
+
+.patient-sidebar__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.patient-sidebar__subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dark .patient-sidebar__subtitle {
+  color: rgba(209, 250, 229, 0.7);
+}
+
+.patient-sidebar__nav {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.patient-sidebar__nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: #fff;
+}
+
+.patient-sidebar__nav-item--inactive:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dark .patient-sidebar__nav-item--inactive:hover {
+  background: rgba(55, 65, 81, 0.8);
+}
+
+.patient-sidebar__nav-item--active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dark .patient-sidebar__nav-item--active {
+  background: rgba(75, 85, 99, 0.8);
+}
+
+.patient-sidebar__nav-label {
+  font-weight: 500;
+}
+
+.patient-sidebar__footer {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dark .patient-sidebar__footer {
+  color: rgba(229, 231, 235, 0.7);
+}

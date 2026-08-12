@@ -1,0 +1,10 @@
+.doctor-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.doctor-layout__main {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}

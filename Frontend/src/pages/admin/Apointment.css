@@ -1,0 +1,125 @@
+.appointments-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+  padding: 1rem;
+  color: #111827;
+}
+
+.appointments-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.appointments-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.appointments-add-btn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.appointments-search {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+}
+
+.appointments-table-wrap {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.appointments-table__head {
+  background: #f3f4f6;
+}
+
+.appointments-table th,
+.appointments-table td {
+  padding: 0.75rem 1rem;
+}
+
+.appointments-table__row {
+  border-top: 1px solid #e5e7eb;
+}
+
+.appointments-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.appointments-edit-btn,
+.appointments-delete-btn,
+.appointments-cancel-btn,
+.appointments-submit-btn {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+}
+
+.appointments-edit-btn { background: #fbbf24; color: #111827; }
+.appointments-delete-btn { background: #ef4444; color: #ffffff; }
+
+.appointments-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.appointments-modal {
+  width: 24rem;
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.appointments-modal__title {
+  font-size: 1.25rem;
+  margin: 0 0 1rem;
+}
+
+.appointments-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.appointments-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+}
+
+.appointments-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.appointments-cancel-btn { background: #e5e7eb; color: #111827; }
+.appointments-submit-btn { background: #2563eb; color: #ffffff; }

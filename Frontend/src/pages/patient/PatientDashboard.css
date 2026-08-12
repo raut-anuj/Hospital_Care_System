@@ -1,0 +1,115 @@
+.patient-dashboard-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+  padding: 2rem;
+  color: #1f2937;
+}
+
+.patient-dashboard-page__title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.patient-dashboard-page__welcome {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.patient-dashboard-page__welcome h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.patient-dashboard-page__welcome p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.patient-dashboard-page__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.patient-dashboard-page__stat {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.patient-dashboard-page__stat h3 {
+  margin: 0 0 0.75rem;
+  color: #374151;
+  font-size: 1rem;
+}
+
+.patient-dashboard-page__stat p {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.patient-dashboard-page__stat--blue { color: #2563eb; }
+.patient-dashboard-page__stat--green { color: #16a34a; }
+.patient-dashboard-page__stat--purple { color: #a855f7; }
+.patient-dashboard-page__stat--red { color: #f87171; }
+
+.patient-dashboard-page__panel {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.patient-dashboard-page__panel h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.patient-dashboard-page__panel ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.patient-dashboard-page__panel--table {
+  overflow: hidden;
+}
+
+.patient-dashboard-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.patient-dashboard-page__table th,
+.patient-dashboard-page__table td {
+  padding: 0.75rem 0.5rem;
+}
+
+.patient-dashboard-page__table thead {
+  background: #f3f4f6;
+}
+
+.patient-dashboard-page__badge {
+  display: inline-block;
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-radius: 9999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .patient-dashboard-page__stats {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,26 +1,34 @@
 import { Routes, Route } from "react-router-dom";
-import { Login, Signup } from "./components/index.js";
-import { ForgotPassword } from "./components/index.js";
-
-import { AdminLayout, DoctorLayout, PatientLayout } from "./components/index.js";
-
-//admin
-import { Dashboard, AdminAppointments, Patients, Doctors } from "./components/index.js";
-
-//doctor
-import { AppointmentList, DoctorDashboard, ScheduleAppointment } from "./components/index.js";
-
-//patient
-import { PatientDashboard } from "./components/index.js"
-import { PatientAppointment }from "./components/index.js";
-import { ProtectedRoute } from "./components/index.js";
-
-import { Unauthorized, Home } from "./components/index.js";
+import {
+  Login,
+  Signup,
+  ForgotPassword,
+  AdminLayout,
+  DoctorLayout,
+  PatientLayout,
+  Dashboard,
+  AdminAppointments,
+  Patients,
+  AdminDoctors,
+  AppointmentList,
+  DoctorDashboard,
+  ScheduleAppointment,
+  PatientDashboard,
+  PatientAppointment,
+  ProtectedRoute,
+  Unauthorized,
+  Home,
+  About,
+  Doctors,
+  Contact,
+} from "./components/index.js";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
 
       {/* Auth routes */}
       <Route path="/login" element={<Login />} />
@@ -37,7 +45,7 @@ export default function App() {
         }
       >
         <Route index element={<Dashboard />} />
-        <Route path="doctors" element={<Doctors />} />
+        <Route path="doctors" element={<AdminDoctors />} />
         <Route path="patients" element={<Patients />} />
         <Route path="appointments" element={<AdminAppointments />} />
       </Route>
@@ -69,7 +77,6 @@ export default function App() {
         <Route path="appointment" element={<PatientAppointment />} />
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />
-
     </Routes>
   );
 }
