@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Patient.css";
+import "../../styles/Patient.css";
 
 export default function Patients() {
   const [list, setList] = useState([]);

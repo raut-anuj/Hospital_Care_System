@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import "./DoctorSidebar.css";
+import "../../styles/DoctorSidebar.css";
 
 const menuItems = [
   { name: "Dashboard", path: "/doctor", exact: true },

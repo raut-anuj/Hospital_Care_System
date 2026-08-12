@@ -1,4 +1,4 @@
-import './Doctors.css';
+import '../styles/Doctors.css';
 import Footer from '../components/Footer/Footer';
 
 const doctors = [

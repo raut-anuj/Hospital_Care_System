@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import "./Header.css";
+import "../../styles/Header.css";
 
 export default function HospitalCareHeader() {
  const [open, setOpen] = useState(false);

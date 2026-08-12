@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../components/Button';
 import Footer from '../components/Footer/Footer';
-import "./Home.css";
+import "../styles/Home.css";
 
 const Home = () => {
   const features = [

@@ -4,7 +4,7 @@ import { Button, Input } from "./index.js";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import "./Login.css";
+import "../styles/Login.css";
 
 function Login() {
  const [error, setError] = useState("");

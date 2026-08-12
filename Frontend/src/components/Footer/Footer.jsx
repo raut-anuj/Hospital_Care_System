@@ -1,4 +1,4 @@
-import './Footer.css';
+import '../../styles/Footer.css';
 
 export default function Footer() {
   return (
@@ -23,8 +23,8 @@ export default function Footer() {
         <div className="footer__column">
           <h4 className="footer__heading">Contact</h4>
           <ul className="footer__list">
-            <li>+91 9090090990</li>
-            <li>abc@gmail.com</li>
+            <li>+91 1234567890</li>
+            <li>contact@hospitalcare.com"</li>
             <li>24 Green Park Road, New Delhi</li>
           </ul>
         </div>

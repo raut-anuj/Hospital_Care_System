@@ -1,4 +1,4 @@
-import './Contact.css';
+import '../styles/Contact.css';
 import Footer from '../components/Footer/Footer';
 
 const Contact = () => {

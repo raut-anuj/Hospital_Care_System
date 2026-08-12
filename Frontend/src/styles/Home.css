@@ -1,21 +1,23 @@
 .home-page {
   width: 100%;
+  min-height: 100vh;
   background: #ffffff;
   color: #111827;
 }
 
 .home-hero {
   background: #93c5fd;
-  padding: 5rem 2rem 4rem;
+  padding: clamp(2rem, 6vw, 5rem) 1.5rem clamp(2rem, 6vw, 4rem);
   text-align: left;
 }
 
 .home-title {
   margin: 0;
   color: #ffffff;
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.05;
+  max-width: 42rem;
 }
 
 .home-highlight {
@@ -24,10 +26,11 @@
 
 .home-subtitle {
   margin-top: 1rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  max-width: 900px;
+  font-size: clamp(1rem, 2.2vw, 1.4rem);
+  font-weight: 600;
+  max-width: 40rem;
   color: #0f172a;
+  line-height: 1.6;
 }
 
 .home-actions {
@@ -35,9 +38,11 @@
   gap: 1rem;
   margin-top: 1.5rem;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .home-action {
+  flex: 1 1 minmax(12rem, 18rem);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -49,24 +54,23 @@
 .home-section-title {
   padding: 2.5rem 1rem 1rem;
   text-align: center;
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 3vw, 2.5rem);
   font-weight: 700;
   color: #334155;
 }
 
 .home-features {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(18rem, 1fr));
   justify-content: center;
-  gap: 2rem;
+  gap: 1.75rem;
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem 1rem 3rem;
 }
 
 .home-feature-card {
-  width: 16rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -74,7 +78,7 @@
   background: #ffffff;
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
-  padding: 1.5rem;
+  padding: 1.75rem 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -84,8 +88,8 @@
 }
 
 .home-feature-card__img {
-  width: 5rem;
-  height: 5rem;
+  width: 4.5rem;
+  height: 4.5rem;
   margin-bottom: 0.75rem;
 }
 
@@ -93,20 +97,20 @@
   margin: 0 0 0.5rem;
   color: #111827;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .home-feature-card__desc {
   margin: 0;
   color: #4b5563;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
 }
 
 .home-doctors-heading {
   margin: 0 0 1.5rem;
   text-align: center;
   color: #374151;
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 3vw, 2.5rem);
   font-weight: 700;
 }
 
@@ -118,15 +122,15 @@
 
 .home-doctors-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(3, minmax(18rem, 1fr));
+  gap: 1.75rem;
 }
 
 .home-doctor-card {
   background: #ffffff;
   box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
   border-radius: 1rem;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 1.25rem;
   text-align: center;
 }
 
@@ -164,7 +168,7 @@
 .home-testimonials__title {
   margin: 0 0 2rem;
   text-align: center;
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 3vw, 2.5rem);
   color: #1f2937;
 }
 
@@ -172,8 +176,8 @@
   max-width: 1280px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(3, minmax(18rem, 1fr));
+  gap: 1.75rem;
 }
 
 .home-testimonial-card {
@@ -208,9 +212,56 @@
   color: #1d4ed8;
 }
 
+@media (max-width: 1024px) {
+  .home-actions {
+    justify-content: center;
+  }
+
+  .home-hero {
+    text-align: center;
+  }
+
+  .home-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-section-title,
+  .home-doctors-heading {
+    max-width: 36rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-doctors-heading {
+    font-size: clamp(1.9rem, 3.5vw, 2.3rem);
+  }
+
+  .home-features,
+  .home-doctors-grid,
+  .home-testimonials__grid {
+    grid-template-columns: repeat(2, minmax(18rem, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
+  .home-hero {
+    padding: 2.5rem 1rem 2rem;
+  }
+
+  .home-actions {
+    justify-content: center;
+  }
+
+  .home-action {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .home-features,
   .home-doctors-grid,
   .home-testimonials__grid {
     grid-template-columns: 1fr;
   }
 }
+
