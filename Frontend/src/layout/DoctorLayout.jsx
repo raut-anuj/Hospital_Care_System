@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Header, DoctorSidebar } from "../components/index.js";
-import "./DoctorLayout.css";
+import "../styles/DoctorLayout.css";
 
 export default function DoctorLayout() {
   return (

@@ -1,5 +1,5 @@
 import React, { useId } from 'react';
-import './Input.css';
+import '../styles/Input.css';
 
 const Input = React.forwardRef(function Input(
  { label, type = 'text', className = '', ...props },

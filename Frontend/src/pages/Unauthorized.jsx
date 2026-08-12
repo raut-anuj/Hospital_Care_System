@@ -1,4 +1,4 @@
-import "./Unauthorized.css";
+import "../styles/Unauthorized.css";
 
 export default function Unauthorized() {
   return (

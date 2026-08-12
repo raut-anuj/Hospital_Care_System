@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Input } from './index.js';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import './Signup.css';
+import '../styles/Signup.css';
 
 function Signup() {
  const navigate = useNavigate();

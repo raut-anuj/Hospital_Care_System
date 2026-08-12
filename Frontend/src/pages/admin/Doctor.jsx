@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Doctor.css";
+import "../../styles/Doctor.css";
 
 export default function Doctors() {
   const [list, setList] = useState([]);
