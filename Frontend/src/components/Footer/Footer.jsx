@@ -1,4 +1,4 @@
-import '../../styles/Footer.css';
+import './Footer.css';
 
 export default function Footer() {
   return (
@@ -23,18 +23,24 @@ export default function Footer() {
         <div className="footer__column">
           <h4 className="footer__heading">Contact</h4>
           <ul className="footer__list">
-            <li>+91 1234567890</li>
-            <li>contact@hospitalcare.com"</li>
-            <li>24 Green Park Road, New Delhi</li>
+            <li>
+              <a href="tel:+919090090990" className="footer__link">+91 9090090990</a>
+            </li>
+            <li>
+              <a href="mailto:abc@gmail.com" className="footer__link">abc@gmail.com</a>
+            </li>
+            <li>
+              <span className="footer__link footer__link--static">24 Green Park Road, New Delhi</span>
+            </li>
           </ul>
         </div>
 
         <div className="footer__column">
           <h4 className="footer__heading">Social</h4>
           <div className="footer__socials">
-            <span>Facebook</span>
-            <span>Instagram</span>
-            <span>LinkedIn</span>
+            <a href="#" className="footer__link" aria-label="Facebook">Facebook</a>
+            <a href="#" className="footer__link" aria-label="Instagram">Instagram</a>
+            <a href="#" className="footer__link" aria-label="LinkedIn">LinkedIn</a>
           </div>
         </div>
       </div>
