@@ -1,32 +1,10 @@
 import React from 'react';
 import Button from '../components/Button';
 import Footer from '../components/Footer/Footer';
+import HealthCareFeature from './HealthCare Feature/HealthCare Feature.jsx';
 import "../styles/Home.css";
 
 const Home = () => {
-  const features = [
-   {
-     title: "Easy Scheduling",
-     desc: "Book appointments with just a few clicks, 24/7 at your convenience.",
-     img: "https://cdn-icons-png.flaticon.com/128/15440/15440333.png",
-   },
-   {
-     title: "Instant Confirmation",
-     desc: "Receive immediate confirmation and reminders for your appointments.",
-     img: "https://cdn-icons-png.flaticon.com/128/5290/5290076.png",
-   },
-   {
-     title: "Top Specialists",
-     desc: "Access a wide network of qualified healthcare professionals.",
-     img: "https://cdn-icons-png.flaticon.com/128/11278/11278170.png",
-   },
-   {
-     title: "Secure & Private",
-     desc: "Your health information is protected with top-tier security.",
-     img: "https://cdn-icons-png.flaticon.com/128/10394/10394686.png",
-   },
-  ];
-
   const doctors = [
    { name: "Dr. Raju", specialization: "Physician" },
    { name: "Dr. Narinder", specialization: "Orthologist" },
@@ -70,17 +48,7 @@ const Home = () => {
        </div>
      </div>
 
-     <div className="home-section-title">Healthcare Features</div>
-
-     <div className="home-features">
-       {features.map((card, i) => (
-         <div key={i} className="home-feature-card">
-           <img src={card.img} alt={card.title} className="home-feature-card__img" />
-           <p className="home-feature-card__title">{card.title}</p>
-           <p className="home-feature-card__desc">{card.desc}</p>
-         </div>
-       ))}
-     </div>
+     <HealthCareFeature />
 
      <p className="home-doctors-heading">Meet Our Doctors</p>
 
