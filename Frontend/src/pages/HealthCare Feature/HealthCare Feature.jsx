@@ -30,7 +30,7 @@ export default function HealthCareFeature() {
     },
     {
       title: "Online Video Consultation",
-      icon: byPrefixAndName.far.faVideo,
+      icon: byPrefixAndName.fas.faVideo,
     },
     {
       title: "Family Care Support",

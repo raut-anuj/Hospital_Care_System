@@ -6,11 +6,10 @@ import Home from '../pages/Home'
 import About from '../pages/About'
 import Doctors from '../pages/Doctors'
 import Contact from '../pages/Contact'
-import Card from '../components/Card'
+// import Card from '../components/Card'
 import Footer from '../components/Footer/Footer'
 import ForgotPassword from '../components/ForgotPassword'
 
-// import Card from "../components/admin/Card"
 import Navbar from "../components/admin/Navbar"
 import Sidebar from '../components/admin/Sidebar'
 import DoctorSidebar from "../components/doctor/DoctorSidebar"
@@ -49,7 +48,7 @@ export {
     Login,
     Signup,
     Header,
-    Card,
+    // Card,
     ForgotPassword,
 
     //admin

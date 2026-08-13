@@ -1,7 +1,7 @@
 .healthcare-feature {
   width: 100%;
   background: #f8fbff;
-  padding: 2rem 1rem 3rem;
+  padding: 3rem 1rem 3rem;
 }
 
 .healthcare-feature-slider {
@@ -17,7 +17,7 @@
 }
 
 .viewport {
-  width: min(100%, 80rem);
+  width: min(100%, 75rem);
   overflow: hidden;
   padding: 2rem 0;
   position: relative;
@@ -29,7 +29,7 @@
 }
 
 .slide {
-  flex: 0 0 18rem;
+  flex: 0 0 16.5rem;
   display: flex;
   justify-content: center;
 }
