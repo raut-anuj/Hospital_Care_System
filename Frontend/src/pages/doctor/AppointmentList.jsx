@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/AppointmentList.css";
+import API_URL from "../../api/api.js";
 
 export default function AppointmentList() {
  const [appointment, setAppointment] = useState([]);
@@ -7,7 +8,10 @@ export default function AppointmentList() {
  useEffect(() => {
    const fetchAppointments = async () => {
      try {
-       const res = await fetch("http://localhost:8000/api/v1/doctor/getAllAppointments?drname=Dr.Kumar");
+       const res = await fetch(
+        `${API_URL}/api/v1/doctor/getAllAppointments?drname=Dr.Kumar`,
+        // "http://localhost:8000/api/v1/doctor/getAllAppointments?drname=Dr.Kumar"
+      );
        const data = await res.json();
        setAppointment(data?.data || []);
      } catch (err) {

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Input } from "./index.js";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import "../styles/Login.css";
+import API_URL from "../api/api";
 
 function Login() {
  const [error, setError] = useState("");
@@ -14,7 +14,10 @@ function Login() {
 
  const login = async (data) => {
    try {
-     const res = await fetch("http://localhost:8000/api/v1/patient/login", {
+     const res = await fetch(
+        `${API_URL}/api/v1/patient/login`,
+      // "http://localhost:8000/api/v1/patient/login", 
+      {
        method: "POST",
        headers: {
          "Content-Type": "application/json",

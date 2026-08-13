@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/PatientAppointment.css";
+import API_URL from "../../api/api";
 
 export default function PatientAppointment() {
  const [appointments, setAppointments] = useState([]);
@@ -24,7 +25,10 @@ return;
    }
 
    try {
-const res = await fetch("http://localhost:8000/api/v1/patient/createAppointment", {
+const res = await fetch(
+   `${API_URL}/api/v1/patient/createAppointment`
+  // "http://localhost:8000/api/v1/patient/createAppointment"
+  , {
        method: "POST",
        headers: { "Content-Type": "application/json" },
        body: JSON.stringify({
@@ -64,7 +68,10 @@ setError("Server error");
  useEffect(() => {
    const fetchAppointments = async () => {
 try {
-       const res = await fetch("http://localhost:8000/api/v1/patient/getAppointments?name=Raut Kumar");
+       const res = await fetch(
+         `${API_URL}/api/v1/patient/getAppointments?name=Raut Kumar`
+        // "http://localhost:8000/api/v1/patient/getAppointments?name=Raut Kumar"
+      );
        const data = await res.json();
        const sortedAppointments = (data?.data || []).sort((a, b) => new Date(a.date) - new Date(b.date));
        setAppointments(sortedAppointments);
@@ -75,7 +82,10 @@ try {
 
    const fetchDoctors = async () => {
 try {
-       const res = await fetch("http://localhost:8000/api/v1/admin/doctorsList");
+       const res = await fetch(
+         `${API_URL}/api/v1/admin/doctorsList`
+        // "http://localhost:8000/api/v1/admin/doctorsList"
+      );
        const data = await res.json();
        const sortedDoctors = [...data.data].sort((a, b) => a.drname.localeCompare(b.drname));
        setDoctors(sortedDoctors);

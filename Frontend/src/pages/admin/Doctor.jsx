@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/Doctor.css";
+import API_URL from "../../api/api.js";
 
 export default function Doctors() {
   const [list, setList] = useState([]);
@@ -9,7 +10,8 @@ export default function Doctors() {
     const fetchList = async () => {
       try {
         const res = await fetch(
-          "http://localhost:8000/api/v1/admin/doctorsList?name=Admin"
+            `${API_URL}/api/v1/admin/doctorsList?name=Admin`,
+          // "http://localhost:8000/api/v1/admin/doctorsList?name=Admin"
         );
 
         const data = await res.json();

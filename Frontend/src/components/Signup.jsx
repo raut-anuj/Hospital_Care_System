@@ -3,6 +3,7 @@ import { Button, Input } from './index.js';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Signup.css';
+import API_URL from "../api/api.js"
 
 function Signup() {
  const navigate = useNavigate();
@@ -11,7 +12,10 @@ function Signup() {
 
  const create = async (data) => {
    try {
-     const res = await fetch('http://localhost:8000/api/v1/patient/register', {
+     const res = await fetch(
+        `${API_URL}/api/v1/patient/register`,
+      // 'http://localhost:8000/api/v1/patient/register', 
+      {
        method: 'POST',
        headers: {
          'Content-Type': 'application/json',

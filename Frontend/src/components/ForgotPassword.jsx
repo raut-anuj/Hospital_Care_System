@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import API_URL from "../api/api";
 import '../styles/ForgotPassword.css';
 
 function ForgotPassword() {
@@ -35,7 +36,10 @@ function ForgotPassword() {
     try {
       setLoading(true);
 
-      const res = await fetch('http://localhost:8000/api/v1/patient/forgotPassword', {
+      const res = await fetch(
+         `${API_URL}/api/v1/patient/forgotPassword`,
+        // 'http://localhost:8000/api/v1/patient/forgotPassword', 
+        {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +88,10 @@ function ForgotPassword() {
     try {
       setLoading(true);
 
-      const res = await fetch('http://localhost:8000/api/v1/patient/forgotPassword', {
+      const res = await fetch(
+        `${API_URL}/api/v1/patient/forgotPassword`,
+        // 'http://localhost:8000/api/v1/patient/forgotPassword',
+        {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
