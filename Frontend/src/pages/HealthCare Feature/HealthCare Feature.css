@@ -1,0 +1,129 @@
+.healthcare-feature {
+  width: 100%;
+  background: #f8fbff;
+  padding: 2rem 1rem 3rem;
+}
+
+.healthcare-feature-slider {
+  background: transparent;
+  gap: 1.5rem;
+}
+
+.slider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.viewport {
+  width: min(100%, 80rem);
+  overflow: hidden;
+  padding: 2rem 0;
+  position: relative;
+  margin: 0 auto;
+}
+
+.cards-wrapper {
+  display: flex;
+}
+
+.slide {
+  flex: 0 0 18rem;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: auto;
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.active-card {
+  transform: scale(1.05);
+  opacity: 1;
+  z-index: 3;
+}
+
+.middle-card {
+  transform: scale(0.96);
+  opacity: 0.72;
+  z-index: 2;
+}
+
+.back-card {
+  transform: scale(0.9);
+  opacity: 0.45;
+  z-index: 1;
+}
+
+.icon {
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  font-size: 2.1rem;
+  color: #0f172a;
+}
+
+.title {
+  width: 11rem;
+  text-align: center;
+  line-height: 1.4;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #cbd5e1;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.active-dot {
+  background: #2563eb;
+  width: 1.3rem;
+  height: 0.7rem;
+  border-radius: 0.4rem;
+}
+
+@media (max-width: 768px) {
+  .healthcare-feature {
+    padding: 1.5rem 0.75rem 2.5rem;
+  }
+
+  .slide {
+    flex-basis: 14rem;
+  }
+
+  .title {
+    width: 9.5rem;
+    font-size: 0.95rem;
+  }
+}
+
