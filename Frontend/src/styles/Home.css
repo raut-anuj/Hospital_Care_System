@@ -180,6 +180,21 @@
   gap: 1.75rem;
 }
 
+/* On medium screens use flex so an odd last item centers between two columns */
+@media (max-width: 1024px) {
+.home-testimonials__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.75rem;
+}
+
+.home-testimonial-card {
+  flex: 1 1 18rem;
+  max-width: 40rem;
+}
+}
+
 .home-testimonial-card {
   background: #ffffff;
   box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);

@@ -79,6 +79,22 @@
   color: #e5e7eb;
 }
 
+/* Theme button specific styling */
+.header__theme-btn {
+  font-size: 1.05rem;
+  color: #374151;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark .header__theme-btn {
+  color: #e5e7eb;
+}
+
+
 .header__dropdown {
   position: absolute;
   right: 0;

@@ -122,6 +122,7 @@ function Login() {
            type="button"
            onClick={() =>
              loginWithRedirect({
+               connection: 'google-oauth2', // redirect directly to Google IdP; confirm this connection name in your Auth0 dashboard
                appState: {
                  returnTo: "/patient",
                },

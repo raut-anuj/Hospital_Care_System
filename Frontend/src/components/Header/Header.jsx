@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import "../../styles/Header.css";
 
 export default function HospitalCareHeader() {
- const [open, setOpen] = useState(false);
  const menuRef = useRef();
  const { logout: auth0Logout, isAuthenticated } = useAuth0();
+ // theme state (true = dark)
  const [darkMode, setDarkMode] = useState(
    localStorage.getItem("theme") === "dark"
  );
@@ -53,6 +55,8 @@ export default function HospitalCareHeader() {
    }
  };
 
+ const toggleTheme = () => setDarkMode((s) => !s);
+
  return (
    <header className="header">
      <h1 className="header__title">Hospital Care</h1>
@@ -63,42 +67,14 @@ export default function HospitalCareHeader() {
        </button>
 
        <div className="header__menu-wrap" ref={menuRef}>
+         {/* Theme toggle icon (click to toggle light/dark) */}
          <button
-           onClick={() => setOpen(!open)}
-           className="header__menu-btn"
-           aria-label="Theme menu"
+           onClick={toggleTheme}
+           className="header__menu-btn header__theme-btn"
+           aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
          >
-           <svg
-             className="header__icon"
-             fill="none"
-             stroke="currentColor"
-             viewBox="0 0 24 24"
-           >
-             <path
-               strokeWidth="2"
-               strokeLinecap="round"
-               strokeLinejoin="round"
-               d="M4 6h16M4 12h16M4 18h16"
-             />
-           </svg>
+           <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
          </button>
-
-         {open && (
-           <div className="header__dropdown">
-             <button
-               onClick={() => setDarkMode(false)}
-               className="header__dropdown-btn"
-             >
-               Light
-             </button>
-             <button
-               onClick={() => setDarkMode(true)}
-               className="header__dropdown-btn"
-             >
-               Dark
-             </button>
-           </div>
-         )}
        </div>
      </div>
    </header>

@@ -6,11 +6,12 @@ import '../styles/Signup.css';
 import API_URL from "../api/api.js"
 
 function Signup() {
- const navigate = useNavigate();
- const [error, setError] = useState('');
- const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
+  //Sign Up Valdiation in frontend.
+  const { register, handleSubmit, getValues, formState: { errors } } = useForm();
 
- const create = async (data) => {
+  const create = async (data) => {
    try {
      const res = await fetch(
         `${API_URL}/api/v1/patient/register`,
@@ -53,36 +54,58 @@ function Signup() {
            label="Full Name"
            type="text"
            placeholder="Enter your full name"
-           {...register('name', { required: true })}
+           {...register('name', { required: 'Name is required' })}
          />
+         {errors.name && <p className="signup-field-error">{errors.name.message}</p>}
 
          <Input
            label="Email"
            type="email"
            placeholder="Enter your email"
            {...register('email', {
-             required: true,
+             required: 'Email is required',
              validate: {
-               matchPattern: (value) =>
-                 /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                 'Email address must be valid',
+               matchPattern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) || 'Email address must be valid',
              },
            })}
          />
+         {errors.email && <p className="signup-field-error">{errors.email.message}</p>}
+
+         <label className="input-label">Sex</label>
+         <select className="input-field" {...register('sex', { required: 'Sex is required' })}>
+           <option value="">Select</option>
+           <option value="Male">Male</option>
+           <option value="Female">Female</option>
+           <option value="Other">Other</option>
+         </select>
+         {errors.sex && <p className="signup-field-error">{errors.sex.message}</p>}
 
          <Input
            label="Password"
            type="password"
            placeholder="Create a password"
-           {...register('password', { required: true })}
+           {...register('password', {
+             required: 'Password is required',
+             minLength: { value: 5, message: 'Password must be at least 5 characters' },
+             validate: {
+               noSpaces: (v) => (!/\s/.test(v)) || 'Password must not contain spaces',
+               hasNumber: (v) => /[0-9]/.test(v) || 'Password must contain at least one number',
+               hasSpecial: (v) => /[!@#\$%\^&\*(),.?"':{}|<>\[\]\\/\\\\;\-_=+]/.test(v) || 'Password must contain at least one special character'
+             }
+           })}
          />
+         {errors.password && <p className="signup-field-error">{errors.password.message}</p>}
 
          <Input
            label="Confirm Password"
            type="password"
            placeholder="Confirm your password"
-           {...register('confirmPassword', { required: true })}
+           {...register('confirmPassword', {
+             required: 'Confirm password is required',
+             validate: (v) => v === getValues('password') || 'Passwords do not match'
+           })}
          />
+         {errors.confirmPassword && <p className="signup-field-error">{errors.confirmPassword.message}</p> }
 
          <Button type="submit" className="signup-submit-btn">
            Create Account

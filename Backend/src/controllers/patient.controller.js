@@ -76,40 +76,74 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const registerUser = asyncHandler(async (req, res) => {
 
-const { name, password, email, confirmPassword } = req.body
+  const { name, password, email, confirmPassword, sex } = req.body;
 
-// validation
-if(!name || !password || !email || !confirmPassword){
-    throw new ApiError(400, "Fill all the fields")
-}
+  // basic presence validation
+  if (!name || !password || !email || !confirmPassword || !sex) {
+    throw new ApiError(400, "Fill all the fields (name, email, sex, password, confirmPassword)");
+  }
 
-if(name.trim() === ""){
-    throw new ApiError(400, "Enter valid name")
-}
+  if (name.trim() === "") {
+    throw new ApiError(400, "Enter valid name");
+  }
 
-if (password !== confirmPassword) {
-  throw new ApiError(400, "Password and Confirm Password do not match");
-}
+  // email format
+  const emailRegex = /^\S+@\S+\.\S+$/;
+  if (!emailRegex.test(email)) {
+    throw new ApiError(400, "Enter a valid email address");
+  }
 
-// create patient
-const patient = await Patient.create({
+  // check email uniqueness
+  const existing = await Patient.findOne({ email });
+  if (existing) {
+    throw new ApiError(400, "Email already in use");
+  }
+
+  // password rules
+  if (password.indexOf(' ') >= 0) {
+    throw new ApiError(400, "Password must not contain spaces");
+  }
+
+  if (password.length < 5) {
+    throw new ApiError(400, "Password must be at least 5 characters long");
+  }
+
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[!@#\$%\^&\*(),.?"':{}|<>\[\]\\/\\\\;\-_=+]/.test(password);
+
+  if (!hasNumber || !hasSpecial) {
+    throw new ApiError(400, "Password must contain at least one number and one special character");
+  }
+
+  if (password !== confirmPassword) {
+    throw new ApiError(400, "Password and Confirm Password do not match");
+  }
+
+  // validate sex (required)
+  const allowedGenders = ["Male", "Female", "Other"];
+  if (typeof sex !== 'string' || !allowedGenders.includes(sex)) {
+    throw new ApiError(400, "Invalid sex value");
+  }
+
+  // create patient
+  const patient = await Patient.create({
     name: name.trim(),
     email,
     password,
-})
+    gender: sex,
+  });
 
-// response
-res.status(201).json(
+  // response
+  res.status(201).json(
     new ApiResponse(
-        201,
-        {
-            // patientId: patient._id,
-            name: patient.name,
-            email
-        },
-        "Successfully registered"
+      201,
+      {
+        name: patient.name,
+        email,
+      },
+      "Successfully registered"
     )
-)
+  );
 });
 
 const loginUser = asyncHandler(async (req, res) => {

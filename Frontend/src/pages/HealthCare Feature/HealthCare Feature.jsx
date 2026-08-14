@@ -46,7 +46,7 @@ export default function HealthCareFeature() {
 
   const autoplay = useRef(
     Autoplay({
-      delay: 1000,
+      delay: 1300,
     }),
   ); 
 
