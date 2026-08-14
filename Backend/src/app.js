@@ -13,7 +13,7 @@ const app= express();
 // const cors = require("cors");
 
 app.use(cors({
-  origin: "http://localhost:5173", // 🔥 ye important
+  origin: process.env.CORS_ORIGIN || "http://localhost:5173", // set CORS_ORIGIN in env for deployed frontend
   credentials: true
 }));
 
