@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+// import { LayoutDashboard, CalendarDays } from "lucide-react";
 import "../../styles/PatientSidebar.css";
 
 const menuItems = [
@@ -16,21 +17,25 @@ export default function PatientSidebar() {
       </NavLink>
 
       <nav className="patient-sidebar__nav">
-        {menuItems.map((item, index) => (
-          <NavLink
-            key={index}
-            to={item.path}
-            end={item.exact || false}
-            className={({ isActive }) =>
-              [
-                "patient-sidebar__nav-item",
-                isActive ? "patient-sidebar__nav-item--active" : "patient-sidebar__nav-item--inactive",
-              ].join(" ")
-            }
-          >
-            <span className="patient-sidebar__nav-label">{item.name}</span>
-          </NavLink>
-        ))}
+        {menuItems.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={index}
+              to={item.path}
+              end={item.exact || false}
+              className={({ isActive }) =>
+                [
+                  "patient-sidebar__nav-item",
+                  isActive ? "patient-sidebar__nav-item--active" : "patient-sidebar__nav-item--inactive",
+                ].join(" ")
+              }
+            >
+              {Icon && <Icon size={18} className="patient-sidebar__nav-icon" />}
+              <span className="patient-sidebar__nav-label">{item.name}</span>
+            </NavLink>
+          );
+        })}
       </nav>
 
       <div className="patient-sidebar__footer">© 2026 Patient Portal</div>
