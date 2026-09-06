@@ -94,64 +94,39 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
    
 const registerUser = asyncHandler(async(req,res)=>{
-    //yha pr aur bhi fields dena ha toh yaad rakhna. 
-    // specialization, experience, salary, workedIn, education
-    const { name, password } = req.body
+    const { name, email, password } = req.body
 
-    if(!name || !password)
+    if(!name ||!email || !password)
         throw new ApiError(400, "Fill all the fields")
 
-    if(name.trim() === "")
+    if(email.trim() === "")
         throw new ApiError(400, "Enter the valid Input")
 
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //     if (!emailRegex.test(email)) {
-    //       throw new ApiError(400, "Invalid email format");
-    //     }
+    if (!email.includes("@"))
+        throw new ApiError(400, "Enter a valid email address")
+
+    if (!/[0-9]/.test(password) || !/[^A-Za-z0-9\s]/.test(password))
+        throw new ApiError(400, "Password must contain at least one number and one special character")
 
     const admin= await Admin.create({ 
             name:name.trim(),
+            email:email.trim().toLowerCase(),
             password
         })
-
-        //console.log(admin);
 
   res
   .status(201)
   .json(new ApiResponse(201, admin, "successfull registered"))
 
 });
-   
-const updateProfile = asyncHandler(async(req,res)=>{
-    const{ email, contactNumber, age, address }=req.body
 
-   const admin = await Admin.findOne({email})
-
-// Agar email mil gaya,
-// 👉 Toh admin ka poora data aa jata hai (jo bhi fields model me hain).
-
-    if(!admin)
-        throw new ApiError(400, "Admin not found")
-
-        contactNumber: admin.contactNumber;
-        age: admin.age;
-        address: admin.address;
-        await Admin.save();
-
-   res.status(200).json(new ApiResponse(200, {
-        contactNumber: admin.contactNumber,
-        age: admin.age,
-        address: admin.address
-    }, "Details Updated"));
-});
-                  
 const loginUser = asyncHandler(async(req,res)=>{
-    const { password, name } = req.body
+    const { password, email } = req.body
 
-    if( !password || !name )
+    if( !password || !email )
         throw new ApiError(400, "All fields are required.")
 
-    if( name.trim() === "")
+    if( email.trim() === "")
         throw new ApiError(400, "Enter valid input.")
 
     //  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -162,7 +137,7 @@ const loginUser = asyncHandler(async(req,res)=>{
     //     // is sh login krwana
     //     }
 
-    const admin = await Admin.findOne({ name });
+    const admin = await Admin.findOne({ email });
           if (!admin) {
                   throw new ApiError(404, "Admin not found in database.")
           }
@@ -189,7 +164,7 @@ const loginUser = asyncHandler(async(req,res)=>{
            admin: loggedInUser, accessToken, refreshToken  
         },
          "Logged in Successfull"))
-         console.log(admin);
+        //  console.log(admin);
          
         //  {
         //   _id: new ObjectId('69b1a86209bf202724877769'),
@@ -201,6 +176,29 @@ const loginUser = asyncHandler(async(req,res)=>{
         // }
 
 });
+
+const updateProfile = asyncHandler(async(req,res)=>{
+    const{ email, contactNumber, age, address }=req.body
+
+   const admin = await Admin.findOne({email})
+
+// Agar email mil gaya,
+// 👉 Toh admin ka poora data aa jata hai (jo bhi fields model me hain).
+
+    if(!admin)
+        throw new ApiError(400, "Admin not found")
+
+        contactNumber: admin.contactNumber;
+        age: admin.age;
+        address: admin.address;
+        await Admin.save();
+
+   res.status(200).json(new ApiResponse(200, {
+        contactNumber: admin.contactNumber,
+        age: admin.age,
+        address: admin.address
+    }, "Details Updated"));
+});                  
 
 const logout = asyncHandler(async (req, res) => {
   

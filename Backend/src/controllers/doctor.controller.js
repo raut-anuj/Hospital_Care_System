@@ -5,6 +5,7 @@ import { Doctor } from "../models/doctor.model.js";
 import jwt from "jsonwebtoken"
 import { Patient } from "../models/patient.model.js"
 import { Appointment } from "../models/appointment.model.js";
+import { MedicalRecord } from "../models/medicalRecord.model.js";
 import { get } from "http";
 
 const generateAccessAndRefreshToken = async(doctorId)=>{
@@ -92,50 +93,44 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async(req,res)=>{
     //yha pr aur bhi fields dena ha toh yaad rakhna. 
     // specialization, experience, salary, workedIn, education
-    const { drname, age, password, fee, specialization, qualification, address } = req.body
+    const { name, email, age, password, fee, specialization, qualification, address, sex} = req.body
 
-    if(!drname || !password || age === undefined)
+    if(!name || !email || !password || age === undefined || !sex)
         throw new ApiError(400, "Fill all the fields")
 
-    if(drname.trim() === "" || age <= 0)
+    if(sex.trim() === "" || name.trim() === "" || email.trim() === "" || age <= 0)
         throw new ApiError(400, "Enter the valid Input")
 
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //     if (!emailRegex.test(email)) {
-    //       throw new ApiError(400, "Invalid email format");
-    //     }
+    if (!email.includes("@"))
+        throw new ApiError(400, "Enter a valid email address")
+
+    if (!/[0-9]/.test(password) || !/[^A-Za-z0-9\s]/.test(password))
+        throw new ApiError(400, "Password must contain at least one number and one special character")
 
     const doctor= await Doctor.create({ 
-            drname: drname.trim(),
+            name: name.trim(),
+            email: email.trim().toLowerCase(),
             age,
             password,
             fee,
             qualification,
             address,
-            specialization
-        })
-
-        const qrData = JSON.stringify({
-        // patientId: patient._id,
-        drname: doctor.drname,
-        age: doctor.age,
-        address: doctor.address,
-        qualification: doctor.qualification,
-        specialization: doctor.specialization,
-        fee: doctor.fee
-        });
-
-        // save qr in DB
-        await doctor.save();
-        
-
+            specialization,
+            sex
+        })      
 
   res.status(201).json(
     new ApiResponse(
         201,
         {
-            // patientId: patient._id,
-            drname: doctor.drname,
+           name: doctor.name,
+           sex: doctor.sex,
+           age: doctor.age,
+           email: doctor.email,
+           fee: doctor.fee,
+           address: doctor.address,
+           qualification: doctor.qualification,
+           specialization: doctor.specialization
         },
         "Successfully registered"
     )
@@ -167,19 +162,15 @@ const updateProfile = asyncHandler(async(req,res)=>{
 });
  
 const loginUser = asyncHandler(async(req,res)=>{
-    const { password, drname } = req.body
+    const { password, email } = req.body
 
-    if( !password || !drname )
+    if( !password || !email )
         throw new ApiError(400, "All fields are required.")
 
-    if( drname.trim() === "")
+    if( email.trim() === "")
         throw new ApiError(400, "Enter valid input.")
 
-    //  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    //     if (!emailRegex.test(email)) 
-    //       throw new ApiError(400, "Invalid email format");
-
-    const doctor = await Doctor.findOne( { drname } )
+    const doctor = await Doctor.findOne({ email: email.trim().toLowerCase() })
 
     const isPasswordCorrect = await doctor.isPasswordCorrect(password)
     if(!isPasswordCorrect)
@@ -198,7 +189,7 @@ new ApiResponse(
 200,
     {
     doctor:{
-        drname: loggedInUser.drname,
+       name: loggedInUser.name,
         age: loggedInUser.age,
         qualification: loggedInUser.qualification,
         specialization: loggedInUser.specialization,
@@ -231,26 +222,22 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const gettAllpatient = asyncHandler(async(req,res)=>{
-    const doctorid = await Doctor.findById(req.doctor.id)
+    const doctorId = req.user?._id || req.doctor?._id;
 
-    if(!doctorid)
+    if(!doctorId)
         throw new ApiError (400, "Invalid Doctor Id.")
 
-    const allPatient = await MedicalRecord.find({
-        doctor_id : doctorid._id
+    const doctor = await Doctor.findById(doctorId);
+    if(!doctor)
+        throw new ApiError (400, "Invalid Doctor Id.")
 
-    })
-    if( allPatient.length === 0 )
-       {
-        return res
-        .status(201)
-        .json(new ApiResponse(200, {}, "No record found"))
-       }
+    const allPatient = await MedicalRecord.find({ doctorId: doctor._id })
+        .populate("patientId", "name email")
+        .lean();
 
-        return res
-        .status(201)
-        .json(new ApiResponse(200, allPatient, "All Records."))
-        
+    return res
+        .status(200)
+        .json(new ApiResponse(200, allPatient, "All Records."));
 });
 
 const changeCurrentPassword = asyncHandler(async(req, res)=>{
@@ -327,24 +314,25 @@ const getTodayAppointments = asyncHandler(async (req, res) => {
 });
 
 const getAllAppointments = asyncHandler(async (req, res) => {
+const doctorId = req.user?._id || req.doctor?._id;
 
-    const doctor = await Doctor.findOne({ drname: req.query.drname });
+if (!doctorId) {
+    throw new ApiError(400, "No doctor found.");
+}
 
-    if (!doctor) {
-        throw new ApiError(400, "No doctor found.");
-    }
+const doctor = await Doctor.findById(doctorId);
+if (!doctor) {
+    throw new ApiError(400, "No doctor found.");
+}
 
-    const appointment = await Appointment.find({
-    doctorId: doctor._id
-}).populate("patientId", "name"); 
+const appointment = await Appointment.find({
+    doctorId: doctor._id,
+    status: "scheduled"
+}).populate("patientId", "name").sort({ date: 1 });
 
-    if (appointment.length === 0) {
-        throw new ApiError(400, "No appointments found.");
-    }
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, appointment, "All appointments fetched successfully."));
+return res
+    .status(200)
+    .json(new ApiResponse(200, appointment, "All scheduled appointments fetched successfully."));
 });
 
 export{

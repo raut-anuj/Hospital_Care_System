@@ -294,17 +294,17 @@ const getPaymentHistory = asyncHandler(async(req, res)=>{
 
 const appointment = asyncHandler(async(req,res)=>{
     
-    const { name, date, drname }= req.body
+    const { name, date, doctorName }= req.body
 
-    if( [ name, date, drname ].some(fields => !fields || fields.trim() === "") ) {
+    if( [ name, date, doctorName ].some(fields => !fields || fields.trim() === "") ) {
         throw new ApiError(400, "All fields are required");  }
 
        const patient = await Patient.findOne({ name })
 
        if(!patient)
         throw new ApiError(404, "No data found about this patient.")
-      
-       const doctor = await Doctor.findOne({ drname }) 
+       
+       const doctor = await Doctor.findOne({ name: doctorName }) 
 
        if(!doctor)
         throw new ApiError(404, "No data found about this Doctor.")
@@ -359,10 +359,10 @@ return res.status(201).json(
 })
 
 const createAppointment = asyncHandler(async (req, res) => {
- const { name, age, email, date, drname, gender, time } = req.body;
+ const { name, age, email, date, doctorName, gender, time } = req.body;
 
  if (
-    [name, email, date, drname, gender, time].some(
+   [name, email, date, doctorName, gender, time].some(
       (field) => !field || field.trim() === ""
     ) ||
     !age
@@ -370,13 +370,15 @@ const createAppointment = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  const doctor = await Doctor.findOne({ drname });
+ const doctor = await Doctor.findOne({ name: doctorName });
 
   if (!doctor) {
     throw new ApiError(404, "Doctor not found");
   }
 
-  let patient = await Patient.findOne({ email });
+  let patient = req.user?._id
+    ? await Patient.findById(req.user._id)
+    : await Patient.findOne({ email });
 
   if (!patient) {
     patient = await Patient.create({
@@ -397,7 +399,7 @@ const createAppointment = asyncHandler(async (req, res) => {
 
   const savedAppointment = await Appointment.findById(newAppointment._id)
     .populate("patientId", "name age email gender")
-    .populate("doctorId", "drname fee specialization");
+    .populate("doctorId", "name fee specialization");
 
   return res.status(201).json(
     new ApiResponse(
@@ -446,21 +448,15 @@ const updateProfile = asyncHandler(async(req,res)=>{
 });
 
 const getAppointments =asyncHandler(async(req,res)=>{
-    const name = req.query.name || req.body.name;
+    const patient = await Patient.findById(req.user?._id);
 
-    
-    if(!name || name.trim() === "")
-        throw new ApiError (400, "Name is required")
-
-    const patient = await Patient.findOne({ name })
-   
     if(!patient)
          throw new ApiError (400, "Patient is not found.")
 
        const getApp = await Appointment.find({patientId: patient._id})
        
         .populate("patientId", "name")   // 👈 patient name
-        .populate("doctorId", "drname"); // 👈 doctor name
+        .populate("doctorId", "name"); // 👈 doctor name
 
        if(getApp.length === 0){
         return res
