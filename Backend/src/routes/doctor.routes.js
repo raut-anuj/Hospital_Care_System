@@ -22,7 +22,8 @@ const router = Router()
   
 router.route("/register").post(registerUser)
 router.route("/logout").post(verifyJWT, logout)
-router.route("/getAllAppointments").get(getAllAppointments)
+router.route("/getMyPatients").get(verifyJWT, gettAllpatient)
+router.route("/getAllAppointments").get(verifyJWT, getAllAppointments)
 router.route("/login").post(loginUser)
 
 export default router

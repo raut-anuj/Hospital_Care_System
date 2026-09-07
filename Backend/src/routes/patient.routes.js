@@ -41,8 +41,8 @@ router.route("/register").post(registerUser)
 router.route("/login").post(loginUser)
 router.route("/logout").post(verifyJWT, logout)
 router.route("/appointment").post(appointment)
-router.route("/createAppointment").post(createAppointment);
-router.route("/getAppointments").get(getAppointments)
+router.route("/createAppointment").post(verifyJWT, createAppointment);
+router.route("/getAppointments").get(verifyJWT, getAppointments)
 router.route("/changeCurrentPassword").put(verifyJWT, changeCurrentPassword)
 router.route("/forgotPassword").put(forgotPassword)
 
