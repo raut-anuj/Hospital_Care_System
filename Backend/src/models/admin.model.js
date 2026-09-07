@@ -6,36 +6,15 @@ const adminSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true,
-    },
-    // emailId:{
-    //     type:String,
-    //     require:true
-    // },
-    password:{
+    }, 
+    email:{
         type:String,
         required:true
     },
-    // address:{
-    //     type:String,
-    //     required:true
-    // },
-    // bloodgroup:{
-    //     type:String,
-    //     required:true
-    // },
-    // age:{
-    //     type:Number,
-    //     required:true
-    // },
-    // sex:{
-    //     type:String,
-    //     enum:["Male","Female","Other"],
-    //     required:true
-    // },
-    // contactNumber:{
-    //   type:Number,
-    //   required:true
-    // }
+    password:{
+        type:String,
+        required:true
+    }
 }, {timestamps:true})
 
 adminSchema.methods.isPasswordCorrect = async function(password){
@@ -46,8 +25,8 @@ adminSchema.methods.generateAccessToken = function(){
         return jwt.sign(
             {
             _id:this._id,
+            email:this.email,
             role: "admin"
-            // email:this.email
             },
             process.env.ACCESS_TOKEN_SECRET,
             {  expiresIn : process.env.ACCESS_TOKEN_EXPIRY  }       

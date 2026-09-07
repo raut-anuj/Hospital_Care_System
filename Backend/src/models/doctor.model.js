@@ -3,9 +3,16 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 const doctorSchema = new mongoose.Schema({
-    drname:{
+    name:{
         type:String,
         required:true,
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true,
+        lowercase:true,
+        trim:true
     },
     fee:{ 
         type: Number, 
@@ -27,10 +34,6 @@ const doctorSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    // emailId:{
-        //     type:String,
-        //     required:true
-        // },
         // salary:{
         //     type:Number,
         //     required:true,
@@ -57,11 +60,11 @@ const doctorSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    // sex:{
-    //     type:String,
-    //     enum:["Male","Female","Other"],
-    //     required:true
-    // },
+    sex:{
+        type:String,
+        enum:["Male","Female","Other"],
+        required:true
+    },
     // contactNumber:{
     //   type:Number,
     //   required:true
