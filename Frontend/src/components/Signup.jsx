@@ -90,7 +90,7 @@ function Signup() {
              validate: {
                noSpaces: (v) => (!/\s/.test(v)) || 'Password must not contain spaces',
                hasNumber: (v) => /[0-9]/.test(v) || 'Password must contain at least one number',
-               hasSpecial: (v) => /[!@#\$%\^&\*(),.?"':{}|<>\[\]\\/\\\\;\-_=+]/.test(v) || 'Password must contain at least one special character'
+               hasSpecial: (v) => /[^A-Za-z0-9\s]/.test(v) || 'Password must contain at least one special character'
              }
            })}
          />
