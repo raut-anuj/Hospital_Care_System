@@ -5,6 +5,11 @@
   color: #111827;
 }
 
+.dark .patient-appointment-page {
+  background: #0f172a;
+  color: #f3f4f6;
+}
+
 .patient-appointment-header {
   display: flex;
   align-items: center;
@@ -18,9 +23,17 @@
   font-weight: 600;
 }
 
+.dark .patient-appointment-header h2 {
+  color: #f9fafb;
+}
+
 .patient-appointment-header p {
   margin: 0.5rem 0 0;
   color: #6b7280;
+}
+
+.dark .patient-appointment-header p {
+  color: #9ca3af;
 }
 
 .patient-appointment-button,
@@ -44,6 +57,11 @@
   color: #111827;
 }
 
+.dark .patient-appointment-cancel-btn {
+  background: #374151;
+  color: #f3f4f6;
+}
+
 .patient-appointment-form-card {
   background: #ffffff;
   border-radius: 1rem;
@@ -52,11 +70,21 @@
   margin-bottom: 2rem;
 }
 
+.dark .patient-appointment-form-card {
+  background: #1f2937;
+  border: 1px solid #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
 .patient-appointment-form-card h2 {
   margin-top: 0;
   text-align: center;
   color: #2563eb;
   font-size: 2rem;
+}
+
+.dark .patient-appointment-form-card h2 {
+  color: #60a5fa;
 }
 
 .patient-appointment-form-grid {
@@ -72,13 +100,24 @@
   color: #1f2937;
 }
 
+.dark .patient-appointment-form-grid label {
+  color: #e5e7eb;
+}
+
 .patient-appointment-input {
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #d1d5db;
   border-radius: 0.75rem;
   background: #f3f4f6;
+  color: #111827;
   padding: 0.75rem 1rem;
+}
+
+.dark .patient-appointment-input {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #374151;
 }
 
 .patient-appointment-note {
@@ -89,10 +128,18 @@
   text-align: center;
 }
 
+.dark .patient-appointment-note {
+  background: #1e3a8a;
+}
+
 .patient-appointment-note p {
   margin: 0;
   color: #dc2626;
   font-weight: 700;
+}
+
+.dark .patient-appointment-note p {
+  color: #fca5a5;
 }
 
 .patient-appointment-actions {
@@ -109,11 +156,21 @@
   font-weight: 600;
 }
 
+.dark .patient-appointment-error {
+  color: #f87171;
+}
+
 .patient-appointment-table-wrapper {
   background: #ffffff;
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
   overflow: hidden;
+}
+
+.dark .patient-appointment-table-wrapper {
+  background: #1f2937;
+  border: 1px solid #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 }
 
 .patient-appointment-table {
@@ -126,6 +183,11 @@
   background: #dbeafe;
 }
 
+.dark .patient-appointment-table thead {
+  background: #111827;
+  color: #e5e7eb;
+}
+
 .patient-appointment-table th,
 .patient-appointment-table td {
   padding: 0.75rem 1rem;
@@ -133,6 +195,14 @@
 
 .patient-appointment-table tbody tr {
   border-top: 1px solid #e5e7eb;
+}
+
+.dark .patient-appointment-table tbody tr {
+  border-top-color: #374151;
+}
+
+.dark .patient-appointment-table tbody tr:hover {
+  background: #374151;
 }
 
 .patient-appointment-status {
@@ -145,10 +215,19 @@
   font-weight: 600;
 }
 
+.dark .patient-appointment-status {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+
 .patient-appointment-empty {
   text-align: center;
   color: #6b7280;
   padding: 1rem;
+}
+
+.dark .patient-appointment-empty {
+  color: #9ca3af;
 }
 
 @media (max-width: 768px) {
