@@ -8,7 +8,7 @@ export default function PatientLayout() {
       <PatientSidebar />
 
       <main className="patient-layout__main">
-        <Header />
+        <Header mode="authenticated" />
         <Outlet />
         <Footer />
       </main>

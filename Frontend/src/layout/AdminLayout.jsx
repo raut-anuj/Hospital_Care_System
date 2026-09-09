@@ -8,7 +8,7 @@ export default function AdminLayout() {
       <Sidebar />
 
       <main className="admin-layout__main">
-        <Header />
+        <Header mode="authenticated" />
         <Outlet />
       </main>
     </div>

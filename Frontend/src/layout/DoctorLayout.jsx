@@ -8,7 +8,7 @@ export default function DoctorLayout() {
       <DoctorSidebar />
 
       <main className="doctor-layout__main">
-        <Header />
+        <Header mode="authenticated" />
         <Outlet />
       </main>
     </div>
