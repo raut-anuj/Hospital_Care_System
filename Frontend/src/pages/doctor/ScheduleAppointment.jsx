@@ -8,10 +8,15 @@ export default function ScheduleAppointment() {
  useEffect(() => {
    const fetchAppointments = async () => {
      try {
+       const token = localStorage.getItem("token");
        const res = await fetch(
-        `${API_URL}/api/v1/doctor/getAllAppointments?drname=Dr.Kumar`
-        // "http://localhost:8000/api/v1/doctor/getAllAppointments?drname=Dr.Kumar"
-      );
+         `${API_URL}/api/v1/doctor/getAllAppointments`,
+         {
+           headers: {
+             Authorization: `Bearer ${token}`,
+           },
+         }
+       );
        const data = await res.json();
        setAppointment(data?.data || []);
      } catch (err) {
@@ -21,14 +26,8 @@ export default function ScheduleAppointment() {
    fetchAppointments();
  }, []);
 
- const today = new Date();
- today.setHours(0, 0, 0, 0);
-
  const futureAppointments = appointment
-   .filter((a) => {
-     const apptDate = new Date(a.date);
-     return apptDate >= today;
-   })
+   .filter((a) => (a.status || "").toLowerCase() === "scheduled")
    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
  return (

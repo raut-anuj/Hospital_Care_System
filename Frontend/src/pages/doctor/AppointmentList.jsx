@@ -8,10 +8,15 @@ export default function AppointmentList() {
  useEffect(() => {
    const fetchAppointments = async () => {
      try {
+       const token = localStorage.getItem("token");
        const res = await fetch(
-        `${API_URL}/api/v1/doctor/getAllAppointments?drname=Dr.Kumar`,
-        // "http://localhost:8000/api/v1/doctor/getAllAppointments?drname=Dr.Kumar"
-      );
+         `${API_URL}/api/v1/doctor/getAllAppointments`,
+         {
+           headers: {
+             Authorization: `Bearer ${token}`,
+           },
+         }
+       );
        const data = await res.json();
        setAppointment(data?.data || []);
      } catch (err) {
@@ -21,14 +26,8 @@ export default function AppointmentList() {
    fetchAppointments();
  }, []);
 
- const today = new Date();
- today.setHours(0, 0, 0, 0);
-
- const PastAppointments = appointment
-   .filter((a) => {
-     const apptDate = new Date(a.date);
-     return apptDate < today;
-   })
+ const scheduledAppointments = appointment
+   .filter((a) => (a.status || "").toLowerCase() === "scheduled")
    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
  return (
@@ -48,8 +47,8 @@ export default function AppointmentList() {
          </thead>
 
          <tbody>
-           {PastAppointments.length > 0 ? (
-             PastAppointments.map((a, index) => (
+           {scheduledAppointments.length > 0 ? (
+             scheduledAppointments.map((a, index) => (
                <tr key={a._id} className="appointment-list-page__row">
                  <td>{index + 1}</td>
                  <td>{a.patientId?.name}</td>
@@ -72,7 +71,7 @@ export default function AppointmentList() {
      </div>
 
      <div className="appointment-list-page__list">
-       {Array.isArray(PastAppointments) && PastAppointments.map((item) => (
+       {Array.isArray(scheduledAppointments) && scheduledAppointments.map((item) => (
          <div key={item._id || item.id} className="appointment-list-page__list-card">
            <h3>Patient: {item.patientId?.name || "Not Assigned"}</h3>
            <p>Status: {item.status}</p>
