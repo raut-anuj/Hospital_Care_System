@@ -4,6 +4,10 @@
   padding: 3rem 1rem 3rem;
 }
 
+.dark .healthcare-feature {
+  background: #111827;
+}
+
 .healthcare-feature-slider {
   background: transparent;
   gap: 1.5rem;
@@ -78,6 +82,10 @@
   color: #0f172a;
 }
 
+.dark .icon {
+  color: #bfdbfe;
+}
+
 .title {
   width: 11rem;
   text-align: center;
@@ -86,6 +94,10 @@
   font-weight: 600;
   color: #1f2937;
   margin: 0;
+}
+
+.dark .title {
+  color: #e5e7eb;
 }
 
 .slider-dots {
@@ -103,6 +115,10 @@
   background: #cbd5e1;
   transition: all 0.3s ease;
   cursor: pointer;
+}
+
+.dark .dot {
+  background: #475569;
 }
 
 .active-dot {
@@ -126,4 +142,3 @@
     font-size: 0.95rem;
   }
 }
-
