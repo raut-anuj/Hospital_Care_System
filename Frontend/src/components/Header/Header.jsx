@@ -1,82 +1,98 @@
-import React, { useState, useRef, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { Sun, Moon } from "lucide-react";
 import "../../styles/Header.css";
 
-export default function HospitalCareHeader() {
- const menuRef = useRef();
- const { logout: auth0Logout, isAuthenticated } = useAuth0();
- // theme state (true = dark)
- const [darkMode, setDarkMode] = useState(
-   localStorage.getItem("theme") === "dark"
- );
+export default function HospitalCareHeader({ mode = "public" }) {
+  const navigate = useNavigate();
+  const { isAuthenticated, logout: logoutFromAuth0 } = useAuth0();
+  const isLoggedIn = mode === "authenticated";
 
- useEffect(() => {
-   function handleClick(e) {
-     if (menuRef.current && !menuRef.current.contains(e.target)) {
-       setOpen(false);
-     }
-   }
-   window.addEventListener("click", handleClick);
-   return () => window.removeEventListener("click", handleClick);
- }, []);
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
 
- useEffect(() => {
-   if (darkMode) {
-     document.documentElement.classList.add("dark");
-     localStorage.setItem("theme", "dark");
-   } else {
-     document.documentElement.classList.remove("dark");
-     localStorage.setItem("theme", "light");
-   }
- }, [darkMode]);
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
- const handleLogout = async () => {
-   try {
-     localStorage.clear();
-     sessionStorage.clear();
+  const toggleTheme = () => setDarkMode((prev) => !prev);
 
-     if (isAuthenticated) {
-       auth0Logout({
-         logoutParams: {
-           returnTo: window.location.origin + "/login",
-         },
-       });
-       return;
-     }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
 
-     window.location.href = "/login";
-   } catch (err) {
-     console.error("Logout failed", err);
-     localStorage.clear();
-     sessionStorage.clear();
-     window.location.href = "/login";
-   }
- };
+    if (isAuthenticated) {
+      logoutFromAuth0({
+        logoutParams: { returnTo: window.location.origin },
+      });
+      return;
+    }
 
- const toggleTheme = () => setDarkMode((s) => !s);
+    navigate("/");
+  };
 
- return (
-   <header className="header">
-     <h1 className="header__title">Hospital Care</h1>
+  const showAuthButtons = mode === "public";
 
-     <div className="header__actions">
-       <button onClick={handleLogout} className="header__logout">
-         Logout
-       </button>
+  return (
+    <header className="header">
+      {(mode === "public" || mode === "authenticated") && (
+        <button
+          type="button"
+          className="header__title"
+          onClick={() => navigate("/")}
+          aria-label="Go to home page"
+        >
+          WellSpring Medical
+        </button>
+      )}
 
-       <div className="header__menu-wrap" ref={menuRef}>
-         {/* Theme toggle icon (click to toggle light/dark) */}
-         <button
-           onClick={toggleTheme}
-           className="header__menu-btn header__theme-btn"
-           aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-         >
-           <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
-         </button>
-       </div>
-     </div>
-   </header>
- );
+      <div className="header__actions">
+        {mode === "theme-only" ? null : isLoggedIn ? (
+          <button onClick={handleLogout} className="header__logout">
+            Logout
+          </button>
+        ) : (
+          showAuthButtons && (
+            <>
+              <button
+                onClick={() => navigate("/signup")}
+                className="header__signup"
+              >
+                Sign Up
+              </button>
+
+              <button
+                onClick={() => navigate("/login")}
+                className="header__login"
+              >
+                Login
+              </button>
+            </>
+          )
+        )}
+
+        <button
+          onClick={toggleTheme}
+          className="header__theme-btn"
+          aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {darkMode ? (
+            <Sun size={20} className="header__theme-icon--sun" />
+          ) : (
+            <Moon size={20} className="header__theme-icon--moon" />
+          )}
+        </button>
+      </div>
+    </header>
+  );
 }

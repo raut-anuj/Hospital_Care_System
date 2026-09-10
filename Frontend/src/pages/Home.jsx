@@ -2,12 +2,13 @@ import React from 'react';
 import Button from '../components/Button';
 import Footer from '../components/Footer/Footer';
 import HealthCareFeature from './HealthCare Feature/HealthCare Feature.jsx';
+import HospitalCareHeader from '../components/Header/Header';
 import "../styles/Home.css";
 
 const Home = () => {
   const doctors = [
-   { name: "Dr. Raju", specialization: "Physician" },
-   { name: "Dr. Narinder", specialization: "Orthologist" },
+   { name: "Dr. Anuj", specialization: "Physician" },
+   { name: "Dr. Raut", specialization: "Orthologist" },
    { name: "Dr. Mahit", specialization: "Cardiologist" },
    { name: "Dr. Bhudev", specialization: "Pediatrician" },
    { name: "Dr. Shant", specialization: "General Physician" },
@@ -16,42 +17,14 @@ const Home = () => {
 
   return (
    <div className="home-page">
+     <HospitalCareHeader />
+
      <div className="home-hero">
-       <h1 className="home-title">
-         Your Health,<br />
-         <span className="home-highlight">Our Priority</span>
-       </h1>
-
-       <p className="home-subtitle">
-         Simplify your healthcare journey with expert doctors, easy scheduling,
-         and secured appointments.
-       </p>
-
-       <div className="home-actions">
-
-        {/* Sign Up Button */}
-
-         <Button
-           bgColor="button--bg-black"
-           textColor="button--text-blue"
-           className="home-action home-action--primary"
-           onClick={() => window.open('/signup', '_self')}
-         >
-           Sign Up
-         </Button>
-
-      {/* Login Button */}
-
-         <Button
-           bgColor="button--bg-white"
-           textColor="button--text-blue"
-           className="home-action home-action--secondary"
-           onClick={() => window.open('/login', '_self')}
-         >
-           Login
-         </Button>
-       </div>
-
+       <img
+         className="home-hero-image"
+         src="/hero-image.png"
+         alt="Surgeons performing a procedure"
+       />
      </div>
 
      <HealthCareFeature />
@@ -64,7 +37,6 @@ const Home = () => {
            <div key={i} className="home-doctor-card">
              <h3 className="home-doctor-name">{doc.name}</h3>
              <p className="home-doctor-specialization">Specialization: {doc.specialization}</p>
-             <button className="home-doctor-button">Book Appointment</button>
            </div>
          ))}
        </div>
