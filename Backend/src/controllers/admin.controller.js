@@ -239,8 +239,7 @@ const changeCurrentPassword = asyncHandler(async(req, res)=>{
 });
  
 const allDoctorsList = asyncHandler(async (req, res) => {
-
-  const doctors = await Doctor.find();
+  const doctors = await Doctor.find().select("-password -refreshToken");
 
   return res
     .status(200)
@@ -248,23 +247,21 @@ const allDoctorsList = asyncHandler(async (req, res) => {
 });
 
 const allStaffsList = asyncHandler(async (req, res) => {
-
-   const admin = await Admin.findById(req.user._id)
+   const admin = await Admin.findById(req.user._id);
 
    if(!admin){
-      throw new ApiError(404,"Admin not found")
+      throw new ApiError(404,"Admin not found");
    }
 
-   const doctors = await Staff.find()
+   const staff = await Staff.find().select("-password -refreshToken");
 
    return res
    .status(200)
-   .json(new ApiResponse(200, doctors, "All Staffs list"))
+   .json(new ApiResponse(200, staff, "All Staffs list"));
 });
 
 const allPatientsList = asyncHandler(async (req, res) => {
-
-  const patients = await Patient.find();
+  const patients = await Patient.find().select("-password -refreshToken");
 
   return res
     .status(200)

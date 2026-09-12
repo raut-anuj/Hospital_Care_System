@@ -314,40 +314,71 @@ const getTodayAppointments = asyncHandler(async (req, res) => {
 });
 
 const getAllAppointments = asyncHandler(async (req, res) => {
-const doctorId = req.user?._id || req.doctor?._id;
+  const doctorId = req.user?._id;
 
-if (!doctorId) {
+  if (!doctorId) {
     throw new ApiError(400, "No doctor found.");
-}
+  }
 
-const doctor = await Doctor.findById(doctorId);
-if (!doctor) {
-    throw new ApiError(400, "No doctor found.");
-}
+  const doctor = await Doctor.findById(doctorId);
+  if (!doctor) {
+    throw new ApiError(404, "Doctor not found.");
+  }
 
-const appointment = await Appointment.find({
-    doctorId: doctor._id,
-    status: "scheduled"
-}).populate("patientId", "name").sort({ date: 1 });
+  const filter = { doctorId: doctor._id };
+  if (req.query.status) {
+    filter.status = req.query.status.toLowerCase();
+  }
 
-return res
+  const appointments = await Appointment.find(filter)
+    .populate("patientId", "name email age gender")
+    .sort({ date: 1 });
+
+  return res
     .status(200)
-    .json(new ApiResponse(200, appointment, "All scheduled appointments fetched successfully."));
+    .json(new ApiResponse(200, appointments, "Appointments fetched successfully."));
 });
 
-export{
-    logout,
-    loginUser,
-    registerUser,
+const updateAppointmentStatus = asyncHandler(async (req, res) => {
+  const { appointmentId, status } = req.body;
 
-    updateProfile,
-    getProfile,
-    refreshAccessToken,
-    changeCurrentPassword,
-    generateAccessAndRefreshToken,
+  if (!appointmentId || !status) {
+    throw new ApiError(400, "Appointment ID and status are required");
+  }
 
-    getPatientProfile,
-    gettAllpatient,
-    getTodayAppointments,
-    getAllAppointments
-}
+  const normalizedStatus = status.toLowerCase();
+  if (!["completed", "cancelled"].includes(normalizedStatus)) {
+    throw new ApiError(400, "Status must be 'completed' or 'cancelled'");
+  }
+
+  const doctorId = req.user?._id;
+  const appointment = await Appointment.findOneAndUpdate(
+    { _id: appointmentId, doctorId },
+    { status: normalizedStatus },
+    { new: true }
+  ).populate("patientId", "name email age gender");
+
+  if (!appointment) {
+    throw new ApiError(404, "Appointment not found or not assigned to this doctor");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, appointment, `Appointment status updated to ${normalizedStatus}`));
+});
+
+export {
+  logout,
+  loginUser,
+  registerUser,
+  updateProfile,
+  getProfile,
+  refreshAccessToken,
+  changeCurrentPassword,
+  generateAccessAndRefreshToken,
+  getPatientProfile,
+  gettAllpatient,
+  getTodayAppointments,
+  getAllAppointments,
+  updateAppointmentStatus,
+};

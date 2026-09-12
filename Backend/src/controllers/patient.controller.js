@@ -28,6 +28,16 @@ const generateAccessandRefreshToken = async(patientId)=>{
 }
 };
 
+const isPastDate = (value) => {
+    const appointmentDate = new Date(`${value}T00:00:00.000Z`);
+    const today = new Date();
+    const todayDate = new Date(
+        Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())
+    );
+
+    return Number.isNaN(appointmentDate.getTime()) || appointmentDate < todayDate;
+};
+
 const refreshAccessToken = asyncHandler(async (req, res) => {
     // Get refresh token from [cookies or body]
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
@@ -76,15 +86,21 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const registerUser = asyncHandler(async (req, res) => {
 
-  const { name, password, email, confirmPassword, sex } = req.body;
+  const { name, password, email, confirmPassword, sex, gender, age } = req.body;
+  const patientGender = sex || gender;
 
   // basic presence validation
-  if (!name || !password || !email || !confirmPassword || !sex) {
-    throw new ApiError(400, "Fill all the fields (name, email, sex, password, confirmPassword)");
+  if (!name || !password || !email || !confirmPassword || !patientGender || age === undefined || age === "") {
+    throw new ApiError(400, "Fill all the fields (name, email, age, gender, password, confirmPassword)");
   }
 
   if (name.trim() === "") {
     throw new ApiError(400, "Enter valid name");
+  }
+
+  const numericAge = Number(age);
+  if (!Number.isInteger(numericAge) || numericAge <= 0 || numericAge > 120) {
+    throw new ApiError(400, "Enter a valid age between 1 and 120");
   }
 
   // email format
@@ -121,7 +137,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // validate sex (required)
   const allowedGenders = ["Male", "Female", "Other"];
-  if (typeof sex !== 'string' || !allowedGenders.includes(sex)) {
+  if (typeof patientGender !== 'string' || !allowedGenders.includes(patientGender)) {
     throw new ApiError(400, "Invalid sex value");
   }
 
@@ -130,7 +146,8 @@ const registerUser = asyncHandler(async (req, res) => {
     name: name.trim(),
     email,
     password,
-    gender: sex,
+    gender: patientGender,
+    age: numericAge,
   });
 
   // response
@@ -140,6 +157,7 @@ const registerUser = asyncHandler(async (req, res) => {
       {
         name: patient.name,
         email,
+        age: patient.age,
       },
       "Successfully registered"
     )
@@ -299,6 +317,10 @@ const appointment = asyncHandler(async(req,res)=>{
     if( [ name, date, doctorName ].some(fields => !fields || fields.trim() === "") ) {
         throw new ApiError(400, "All fields are required");  }
 
+       if (isPastDate(date)) {
+        throw new ApiError(400, "Appointment date cannot be in the past");
+       }
+
        const patient = await Patient.findOne({ name })
 
        if(!patient)
@@ -370,10 +392,40 @@ const createAppointment = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
- const doctor = await Doctor.findOne({ name: doctorName });
+  if (isPastDate(date)) {
+    throw new ApiError(400, "Appointment date cannot be in the past");
+  }
+
+  const doctor = await Doctor.findOne({
+    name: { $regex: new RegExp(`^${doctorName.trim()}$`, "i") },
+  });
 
   if (!doctor) {
     throw new ApiError(404, "Doctor not found");
+  }
+
+  // Prevent double booking: check if doctor already has a scheduled appointment on this date and time
+  const appointmentDate = new Date(date);
+  const startOfDay = new Date(appointmentDate);
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(appointmentDate);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const existingAppointment = await Appointment.findOne({
+    doctorId: doctor._id,
+    status: "scheduled",
+    date: {
+      $gte: startOfDay,
+      $lte: endOfDay,
+    },
+    time: time.trim(),
+  });
+
+  if (existingAppointment) {
+    throw new ApiError(
+      409,
+      "Doctor is already booked for this date and time slot. Please choose another slot."
+    );
   }
 
   let patient = req.user?._id
@@ -411,15 +463,10 @@ const createAppointment = asyncHandler(async (req, res) => {
 });
 
 const getProfile = asyncHandler(async(req,res)=>{
-    const { email } = req.body
-
-    if(!email || email.trim()==="" )
-        throw new ApiError(400, "Email is required")
-
-    const patient = await Patient.findOne({email}).select("-password -refreshToken");
+    const patient = await Patient.findById(req.user?._id).select("-password -refreshToken");
 
     if(!patient)
-        throw new ApiError(400, " Patient not found.") 
+        throw new ApiError(404, "Patient not found.")
 
     res
     .status(200)
@@ -456,7 +503,8 @@ const getAppointments =asyncHandler(async(req,res)=>{
        const getApp = await Appointment.find({patientId: patient._id})
        
         .populate("patientId", "name")   // 👈 patient name
-        .populate("doctorId", "name"); // 👈 doctor name
+        .populate("doctorId", "name specialization") // doctor details
+        .sort({ date: 1 }); // ascending order by date
 
        if(getApp.length === 0){
         return res
@@ -468,6 +516,61 @@ const getAppointments =asyncHandler(async(req,res)=>{
         return res
         .status(200)
         .json(new ApiResponse(201, getApp, "Appointments fetched successfully.")) }
+});
+
+const rescheduleAppointment = asyncHandler(async (req, res) => {
+    const { appointmentId, date } = req.body;
+
+    if (!appointmentId || !date) {
+        throw new ApiError(400, "Appointment and date are required");
+    }
+
+    if (isPastDate(date)) {
+        throw new ApiError(400, "Appointment date must be today or a future date");
+    }
+
+    const currentAppointment = await Appointment.findOne({
+        _id: appointmentId,
+        patientId: req.user?._id,
+        status: "scheduled",
+    });
+
+    if (!currentAppointment) {
+        throw new ApiError(404, "Scheduled appointment not found");
+    }
+
+    const newAppointmentDate = new Date(date);
+    const startOfDay = new Date(newAppointmentDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(newAppointmentDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const conflictingAppointment = await Appointment.findOne({
+        _id: { $ne: appointmentId },
+        doctorId: currentAppointment.doctorId,
+        status: "scheduled",
+        date: {
+            $gte: startOfDay,
+            $lte: endOfDay,
+        },
+        time: currentAppointment.time,
+    });
+
+    if (conflictingAppointment) {
+        throw new ApiError(
+            409,
+            "Doctor is already booked for this time slot on the selected date. Please choose another date."
+        );
+    }
+
+    currentAppointment.date = new Date(`${date}T00:00:00.000Z`);
+    await currentAppointment.save();
+
+    const appointmentRecord = await Appointment.findById(currentAppointment._id).populate("doctorId", "name");
+
+    return res.status(200).json(
+        new ApiResponse(200, appointmentRecord, "Appointment date updated successfully")
+    );
 });
 
 const cancelAppointment =asyncHandler(async(req,res)=>{
@@ -516,6 +619,7 @@ export {
     // advance functions
     cancelAppointment,
     getAppointments,
+    rescheduleAppointment,
     createAppointment,
     appointment,
     getMyBills,
