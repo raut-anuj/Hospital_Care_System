@@ -11,8 +11,8 @@ import {
   Patients,
   AdminDoctors,
   AppointmentList,
+  AppointmentHistory,
   DoctorDashboard,
-  ScheduleAppointment,
   PatientDashboard,
   PatientAppointment,
   ProtectedRoute,
@@ -61,7 +61,7 @@ export default function App() {
       >
         <Route index element={<DoctorDashboard />} />
         <Route path="AppointmentList" element={<AppointmentList />} />
-        <Route path="ScheduleAppointment" element={<ScheduleAppointment />} />
+        <Route path="AppointmentHistory" element={<AppointmentHistory />} />
       </Route>
 
       {/* Patient routes */}
@@ -80,24 +80,3 @@ export default function App() {
     </Routes>
   );
 }
-
-//       <Route path="patients" element={<Patients />} />
-//         <Route path="appointments" element={<Appointments />} />
-
-// <Route path="/admin" element={<AdminLayout />}>
-//   <Route index element={<Dashboard />} />
-//   <Route path="doctors" element={<Doctors />} />
-//   <Route path="patients" element={<Patients />} />
-//   <Route path="appointments" element={<AdminAppointments />} />
-// </Route>
-
-// <Route path="/doctor" element={<DoctorLayout />}>
-//   <Route index element={<DoctorDashboard />} />
-//   <Route path="AppointmentList" element={<AppointmentList />} />
-//   <Route path="ScheduleAppointment" element={<ScheduleAppointment />} />
-// </Route>
-
-// <Route path="/patient" element={<PatientLayout />}>
-//   <Route index element={<PatientDashboard />} />
-//   <Route path="appointment" element={<PatientAppointment />} />
-// </Route>
