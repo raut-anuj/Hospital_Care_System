@@ -70,6 +70,22 @@
   margin-bottom: 2rem;
 }
 
+.patient-appointment-form-card--visible {
+  animation: patient-appointment-slide-down 0.3s ease-out;
+  transform-origin: top;
+}
+
+@keyframes patient-appointment-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .dark .patient-appointment-form-card {
   background: #1f2937;
   border: 1px solid #374151;
@@ -197,6 +213,39 @@
   border-top: 1px solid #e5e7eb;
 }
 
+.patient-appointment-skeleton {
+  display: block;
+  width: 75%;
+  height: 1rem;
+  border-radius: 0.35rem;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f8fafc 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: patient-appointment-skeleton-loading 1.2s ease-in-out infinite;
+}
+
+.patient-appointment-skeleton--short {
+  width: 1.5rem;
+}
+
+.patient-appointment-skeleton--status {
+  width: 5rem;
+  border-radius: 9999px;
+}
+
+.dark .patient-appointment-skeleton {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes patient-appointment-skeleton-loading {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
 .dark .patient-appointment-table tbody tr {
   border-top-color: #374151;
 }
@@ -213,6 +262,28 @@
   padding: 0.3rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+.patient-appointment-status--clickable {
+  cursor: pointer;
+}
+
+.patient-reschedule-panel {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  min-width: 12rem;
+  animation: patient-appointment-slide-down 0.25s ease-out;
+}
+
+.patient-reschedule-panel label {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.patient-reschedule-panel .patient-appointment-submit-btn {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
 }
 
 .dark .patient-appointment-status {

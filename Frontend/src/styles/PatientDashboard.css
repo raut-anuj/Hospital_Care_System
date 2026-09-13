@@ -44,33 +44,6 @@
   color: #94a3b8;
 }
 
-.patient-dashboard-status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  color: #065f46;
-  padding: 0.4rem 0.85rem;
-  border-radius: 9999px;
-  font-size: 0.825rem;
-  font-weight: 600;
-}
-
-.dark .patient-dashboard-status-pill {
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(52, 211, 153, 0.25);
-  color: #6ee7b7;
-}
-
-.patient-status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
-}
-
 /* Welcome Banner Card */
 .patient-dashboard-page__welcome {
   background: #ffffff;
@@ -141,17 +114,28 @@
   color: #cbd5e1;
 }
 
-.patient-badge--health {
-  background: #ecfdf5;
-  border-color: #a7f3d0;
-  color: #059669;
-  font-weight: 600;
+.patient-age-skeleton {
+  width: 3.5rem;
+  height: 1.35rem;
+  padding: 0;
+  border: none;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: patient-age-skeleton-loading 1.2s ease-in-out infinite;
 }
 
-.dark .patient-badge--health {
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(52, 211, 153, 0.25);
-  color: #6ee7b7;
+.dark .patient-age-skeleton {
+  background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes patient-age-skeleton-loading {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
 }
 
 /* 4 Stat Cards Grid */
