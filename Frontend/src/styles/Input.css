@@ -53,6 +53,22 @@
   padding-right: 2.75rem;
 }
 
+/* Hide browser default password reveal icons (Edge, IE, etc.) */
+.input-field-password::-ms-reveal,
+.input-field-password::-ms-clear {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.input-field-password::-webkit-contacts-auto-fill-button,
+.input-field-password::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  position: absolute;
+  right: 0;
+}
+
+
 .password-toggle-btn {
   position: absolute;
   right: 0.75rem;
