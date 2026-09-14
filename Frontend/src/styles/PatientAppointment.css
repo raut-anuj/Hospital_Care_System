@@ -293,13 +293,16 @@
 
 .patient-appointment-empty {
   text-align: center;
+  padding: 1.5rem 1rem;
   color: #6b7280;
-  padding: 1rem;
+  font-size: 0.95rem;
 }
 
 .dark .patient-appointment-empty {
   color: #9ca3af;
 }
+
+
 
 @media (max-width: 768px) {
   .patient-appointment-form-grid {
