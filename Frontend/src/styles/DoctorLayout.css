@@ -1,10 +1,22 @@
 .doctor-layout {
   display: flex;
   height: 100vh;
+  background-color: #f3f4f6;
+}
+
+.dark .doctor-layout {
+  background-color: #0f172a;
 }
 
 .doctor-layout__main {
   flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.dark .doctor-layout__main {
+  background-color: #0f172a;
+  color: #f3f4f6;
 }

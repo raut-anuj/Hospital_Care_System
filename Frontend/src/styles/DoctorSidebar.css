@@ -80,7 +80,10 @@
 }
 
 .dark .doctor-sidebar__nav-item--active {
-  background: rgba(75, 85, 99, 0.8);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(5, 150, 105, 0.12));
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
 }
 
 .doctor-sidebar__nav-label {

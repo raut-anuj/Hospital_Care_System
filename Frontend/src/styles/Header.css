@@ -8,6 +8,10 @@
   justify-content: space-between;
 }
 
+.header--no-logo {
+  justify-content: flex-end;
+}
+
 .dark .header {
   background: #111827;
   border-bottom-color: #374151;
@@ -15,9 +19,13 @@
 
 .header__title {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
+  padding: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
   color: #1d4ed8;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
 }
 
 .dark .header__title {
@@ -42,6 +50,55 @@
 
 .header__logout:hover {
   background: #b91c1c;
+}
+
+/* Sign Up button */
+.header__signup {
+  background: #1d4ed8;
+  color: #fff;
+  padding: 0.45rem 1.1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.header__signup:hover {
+  background: #1e40af;
+}
+
+.dark .header__signup {
+  background: #2563eb;
+}
+
+.dark .header__signup:hover {
+  background: #1d4ed8;
+}
+
+/* Login button */
+.header__login {
+  background: transparent;
+  color: #1d4ed8;
+  padding: 0.45rem 1.1rem;
+  border: 1.5px solid #1d4ed8;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.header__login:hover {
+  background: #eff6ff;
+}
+
+.dark .header__login {
+  color: #93c5fd;
+  border-color: #93c5fd;
+}
+
+.dark .header__login:hover {
+  background: rgba(147, 197, 253, 0.1);
 }
 
 .header__menu-wrap {
@@ -83,15 +140,43 @@
 .header__theme-btn {
   font-size: 1.05rem;
   color: #374151;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.35rem;
+  height: 2.35rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.header__theme-icon--moon {
+  color: #4b5563;
+  transition: transform 0.2s ease;
+}
+
+.header__theme-btn:hover .header__theme-icon--moon {
+  transform: rotate(-15deg);
+  color: #1f2937;
 }
 
 .dark .header__theme-btn {
   color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .header__theme-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.header__theme-icon--sun {
+  color: #fbbf24;
+  transition: transform 0.3s ease;
+}
+
+.dark .header__theme-btn:hover .header__theme-icon--sun {
+  transform: rotate(45deg);
+  color: #f59e0b;
 }
 
 
@@ -134,4 +219,30 @@
 
 .dark .header__dropdown-btn:hover {
   background: #374151;
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.65rem 0.75rem;
+  }
+
+  .header__title {
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .header__actions {
+    gap: 0.35rem;
+  }
+
+  .header__signup,
+  .header__login {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.8rem;
+  }
+
+  .header__theme-btn {
+    width: 2rem;
+    height: 2rem;
+  }
 }

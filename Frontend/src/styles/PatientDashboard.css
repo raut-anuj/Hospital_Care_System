@@ -172,69 +172,13 @@
   border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
-
-.patient-stat-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.85rem;
-}
-
-.patient-stat-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.patient-stat-icon--blue {
-  background: #eff6ff;
-  color: #2563eb;
-}
-.dark .patient-stat-icon--blue {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.25);
-}
-
-.patient-stat-icon--green {
-  background: #ecfdf5;
-  color: #059669;
-}
-.dark .patient-stat-icon--green {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.25);
-}
-
-.patient-stat-icon--purple {
-  background: #faf5ff;
-  color: #9333ea;
-}
-.dark .patient-stat-icon--purple {
-  background: rgba(168, 85, 247, 0.15);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.25);
-}
-
-.patient-stat-icon--red {
-  background: #fff1f2;
-  color: #e11d48;
-}
-.dark .patient-stat-icon--red {
-  background: rgba(244, 63, 94, 0.15);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.25);
-}
-
 .patient-stat-tag {
-  font-size: 0.775rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
 }
 
 .dark .patient-stat-tag {
@@ -242,22 +186,16 @@
 }
 
 .patient-stat-value {
-  font-size: 2.1rem;
-  font-weight: 800;
-  line-height: 1;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
   margin: 0 0 0.4rem;
-  letter-spacing: -0.02em;
+  color: #0f172a;
 }
 
-.patient-dashboard-page__stat--blue { color: #2563eb; }
-.patient-dashboard-page__stat--green { color: #059669; }
-.patient-dashboard-page__stat--purple { color: #9333ea; }
-.patient-dashboard-page__stat--red { color: #e11d48; }
-
-.dark .patient-dashboard-page__stat--blue { color: #60a5fa; }
-.dark .patient-dashboard-page__stat--green { color: #34d399; }
-.dark .patient-dashboard-page__stat--purple { color: #c084fc; }
-.dark .patient-dashboard-page__stat--red { color: #fb7185; }
+.dark .patient-stat-value {
+  color: #f8fafc;
+}
 
 .patient-stat-subtext {
   font-size: 0.8rem;
@@ -269,7 +207,7 @@
   color: #94a3b8;
 }
 
-/* Common Panel Container */
+
 .patient-dashboard-page__panel {
   background: #ffffff;
   border: 1px solid #e2e8f0;
