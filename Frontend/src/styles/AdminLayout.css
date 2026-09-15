@@ -1,10 +1,22 @@
 .admin-layout {
   display: flex;
   height: 100vh;
+  background-color: #f3f4f6;
+}
+
+.dark .admin-layout {
+  background-color: #0f172a;
 }
 
 .admin-layout__main {
   flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.dark .admin-layout__main {
+  background-color: #0f172a;
+  color: #f3f4f6;
 }

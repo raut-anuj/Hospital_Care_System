@@ -2,5 +2,13 @@
   border-radius: 0.75rem;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
   background: #fff;
+  color: #111827;
   padding: 1rem;
+}
+
+.dark .card {
+  background: #1f2937;
+  color: #f3f4f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid #374151;
 }

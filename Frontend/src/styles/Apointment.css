@@ -5,6 +5,11 @@
   color: #111827;
 }
 
+.dark .appointments-page {
+  background: #0f172a;
+  color: #f3f4f6;
+}
+
 .appointments-header {
   display: flex;
   align-items: center;
@@ -16,6 +21,10 @@
   font-size: 2rem;
   font-weight: 600;
   margin: 0;
+}
+
+.dark .appointments-title {
+  color: #f9fafb;
 }
 
 .appointments-add-btn {
@@ -34,6 +43,14 @@
   padding: 0.75rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 0.75rem;
+  background: #ffffff;
+  color: #111827;
+}
+
+.dark .appointments-search {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
 }
 
 .appointments-table-wrap {
@@ -41,6 +58,12 @@
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
   overflow: hidden;
+}
+
+.dark .appointments-table-wrap {
+  background: #1f2937;
+  border: 1px solid #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
 }
 
 .appointments-table {
@@ -53,6 +76,11 @@
   background: #f3f4f6;
 }
 
+.dark .appointments-table__head {
+  background: #111827;
+  color: #e5e7eb;
+}
+
 .appointments-table th,
 .appointments-table td {
   padding: 0.75rem 1rem;
@@ -60,6 +88,14 @@
 
 .appointments-table__row {
   border-top: 1px solid #e5e7eb;
+}
+
+.dark .appointments-table__row {
+  border-top-color: #374151;
+}
+
+.dark .appointments-table__row:hover {
+  background: #374151;
 }
 
 .appointments-actions {
@@ -83,7 +119,7 @@
 .appointments-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,6 +130,12 @@
   background: #ffffff;
   border-radius: 1rem;
   padding: 1.5rem;
+}
+
+.dark .appointments-modal {
+  background: #1f2937;
+  color: #f9fafb;
+  border: 1px solid #374151;
 }
 
 .appointments-modal__title {
@@ -113,6 +155,14 @@
   padding: 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 0.5rem;
+  background: #ffffff;
+  color: #111827;
+}
+
+.dark .appointments-input {
+  background: #111827;
+  color: #f9fafb;
+  border-color: #374151;
 }
 
 .appointments-modal__actions {
@@ -122,4 +172,6 @@
 }
 
 .appointments-cancel-btn { background: #e5e7eb; color: #111827; }
+.dark .appointments-cancel-btn { background: #374151; color: #f3f4f6; }
+
 .appointments-submit-btn { background: #2563eb; color: #ffffff; }
