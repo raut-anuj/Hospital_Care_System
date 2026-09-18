@@ -1,5 +1,4 @@
 import React from "react";
-import { Container } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, useCallback, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
@@ -84,7 +83,7 @@ export default function HealthCareFeature() {
 
   return (
     <div className="healthcare-feature">
-      <Container className="healthcare-feature-slider">
+      <div className="healthcare-feature-slider">
         <div className="slider">
           <div className="viewport" ref={emblaRef}>
             <div className="cards-wrapper">
@@ -123,7 +122,7 @@ export default function HealthCareFeature() {
             />
           ))}
         </div>
-      </Container>
+      </div>
     </div>
   );
 }

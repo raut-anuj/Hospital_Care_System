@@ -1,91 +1,79 @@
 import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import "../../styles/DoctorDashboard.css";
 import API_URL from "../../api/api.js";
 
 export default function DoctorDashboard() {
- const [patientCount, setPatientCount] = useState(0);
- const [appointmentCount, setAppointmentCount] = useState(0);
- const [doctorName, setDoctorName] = useState("Doctor");
+  const [doctorName, setDoctorName] = useState("Doctor");
+  const token = localStorage.getItem("token");
 
- useEffect(() => {
-   const token = localStorage.getItem("token");
-   const storedUser = localStorage.getItem("user");
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        if (user?.name) {
+          setDoctorName(user.name);
+        }
+      } catch (error) {
+        console.error("Failed to read doctor name:", error);
+      }
+    }
+  }, []);
 
-   if (storedUser) {
-     try {
-       const user = JSON.parse(storedUser);
-       if (user?.name) {
-         setDoctorName(user.name);
-       }
-     } catch (error) {
-       console.error("Failed to read doctor name:", error);
-     }
-   }
+  const { data: appointments = [], isLoading } = useQuery({
+    queryKey: ["doctor-appointments"],
+    enabled: Boolean(token),
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/api/v1/doctor/getAllAppointments`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Failed to fetch appointments");
+      return data?.data || [];
+    },
+  });
 
-   const fetchCounts = async () => {
-     try {
-       const [patientsRes, appointmentsRes] = await Promise.all([
-         fetch(`${API_URL}/api/v1/doctor/getMyPatients`, {
-           headers: {
-             Authorization: `Bearer ${token}`,
-           },
-         }),
-         fetch(`${API_URL}/api/v1/doctor/getAllAppointments`, {
-           headers: {
-             Authorization: `Bearer ${token}`,
-           },
-         }),
-       ]);
+  // Calculate total unique patients for this doctor from appointment list
+  const uniquePatientsCount = new Set(
+    appointments
+      .map((a) => a.patientId?._id || a.patientId)
+      .filter(Boolean)
+  ).size;
 
-       const patientsData = patientsRes.ok ? await patientsRes.json() : null;
-       const appointmentsData = appointmentsRes.ok ? await appointmentsRes.json() : null;
+  const scheduledCount = appointments.filter(
+    (a) => (a.status || "").toLowerCase() === "scheduled"
+  ).length;
 
-       const patients = Array.isArray(patientsData?.data) ? patientsData.data : [];
-       const appointments = Array.isArray(appointmentsData?.data) ? appointmentsData.data : [];
+  return (
+    <div className="doctor-dashboard">
+      <h2 className="doctor-dashboard__title">Welcome, {doctorName}</h2>
 
-       setPatientCount(patients.length);
-       setAppointmentCount(appointments.length);
-     } catch (error) {
-       console.error("Doctor dashboard count fetch failed:", error);
-       setPatientCount(0);
-       setAppointmentCount(0);
-     }
-   };
+      <div className="doctor-dashboard__stats">
+        <div className="doctor-dashboard__card">
+          <h3>Patient</h3>
+          <p className="doctor-dashboard__value doctor-dashboard__value--blue">
+            {isLoading ? "..." : uniquePatientsCount}
+          </p>
+          <span>Total unique patients</span>
+        </div>
 
-   if (token) {
-     fetchCounts();
-   }
- }, []);
+        <div className="doctor-dashboard__card">
+          <h3>Appointment</h3>
+          <p className="doctor-dashboard__value doctor-dashboard__value--green">
+            {isLoading ? "..." : scheduledCount}
+          </p>
+          <span>Scheduled appointments</span>
+        </div>
 
- return (
-   <div className="doctor-dashboard">
-     <h2 className="doctor-dashboard__title">Welcome, {doctorName}</h2>
-
-     <div className="doctor-dashboard__stats">
-       <div className="doctor-dashboard__card">
-         <h3>My Patients</h3>
-         <p className="doctor-dashboard__value doctor-dashboard__value--blue">{patientCount}</p>
-         <span>Active cases</span>
-       </div>
-
-       <div className="doctor-dashboard__card">
-         <h3>Appointments</h3>
-         <p className="doctor-dashboard__value doctor-dashboard__value--green">{appointmentCount}</p>
-         <span>Scheduled appointments</span>
-       </div>
-
-       <div className="doctor-dashboard__card">
-         <h3>Reports Pending</h3>
-         <p className="doctor-dashboard__value doctor-dashboard__value--purple">3</p>
-         <span>To be reviewed</span>
-       </div>
-     </div>
-
-     <div className="doctor-dashboard__actions">
-       <button className="doctor-dashboard__button doctor-dashboard__button--blue">Add Patient</button>
-       <button className="doctor-dashboard__button doctor-dashboard__button--green">Schedule Appointment</button>
-       <button className="doctor-dashboard__button doctor-dashboard__button--purple">Review Reports</button>
-     </div>
-   </div>
- );
+        <div className="doctor-dashboard__card">
+          <h3>Total Handled</h3>
+          <p className="doctor-dashboard__value doctor-dashboard__value--purple">
+            {isLoading ? "..." : appointments.length}
+          </p>
+          <span>All appointments</span>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -3,16 +3,110 @@ import {
   CalendarDays,
   Pill,
   FileText,
-  CreditCard,
   User,
   Clock,
   CheckCircle2,
   AlertCircle,
-  Activity,
 } from "lucide-react";
 import "../../styles/PatientDashboard.css";
+import API_URL from "../../api/api.js";
+import { useQuery } from "@tanstack/react-query";
 
 export default function PatientDashboard() {
+  const [patientName, setPatientName] = React.useState("Patient");
+  const [patientAge, setPatientAge] = React.useState("");
+  const token = localStorage.getItem("token");
+
+  // ── Profile ───────────────────────────────────────────────────────────────
+  const profileQuery = useQuery({
+    queryKey: ["patient-profile"],
+    enabled: Boolean(token),
+    queryFn: async () => {
+      const response = await fetch(`${API_URL}/api/v1/patient/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(result?.message || "Failed to fetch patient profile");
+      return result?.data;
+    },
+  });
+
+  // ── Appointments (React Query) ────────────────────────────────────────────
+  const appointmentsQuery = useQuery({
+    queryKey: ["patient-appointments"],
+    enabled: Boolean(token),
+    queryFn: async () => {
+      const response = await fetch(
+        `${API_URL}/api/v1/patient/getAppointments`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(
+          result?.message || "Failed to fetch appointments"
+        );
+      return Array.isArray(result?.data) ? result.data : [];
+    },
+  });
+
+  // ── Bills (React Query) ───────────────────────────────────────────────────
+  const billsQuery = useQuery({
+    queryKey: ["patient-bills"],
+    enabled: Boolean(token),
+    queryFn: async () => {
+      const response = await fetch(`${API_URL}/api/v1/patient/myBills`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(result?.message || "Failed to fetch bills");
+      return Array.isArray(result?.data) ? result.data : [];
+    },
+  });
+
+  // ── Sync profile into state ───────────────────────────────────────────────
+  React.useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        if (user?.name) setPatientName(user.name);
+        if (user?.age !== undefined && user?.age !== null)
+          setPatientAge(user.age);
+      } catch (error) {
+        console.error("Failed to read patient name:", error);
+      }
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (profileQuery.data?.name) setPatientName(profileQuery.data.name);
+    if (
+      profileQuery.data?.age !== undefined &&
+      profileQuery.data?.age !== null
+    )
+      setPatientAge(profileQuery.data.age);
+  }, [profileQuery.data]);
+
+  // ── Derived values ────────────────────────────────────────────────────────
+  const allAppointments = appointmentsQuery.data ?? [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const upcomingAppointments = allAppointments
+    .filter((a) => a.status === "scheduled" && new Date(a.date) >= today)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  const upcomingCount = upcomingAppointments.length;
+  const upcomingAppointment = upcomingAppointments[0] ?? null;
+
+  const bills = billsQuery.data ?? [];
+  const pendingBillTotal = bills.reduce(
+    (sum, b) => sum + ((b.totalAmount ?? 0) - (b.paidAmount ?? 0)),
+    0
+  );
+
   return (
     <div className="patient-dashboard-page">
       <div className="patient-dashboard-header">
@@ -22,10 +116,6 @@ export default function PatientDashboard() {
             Welcome to your health overview and appointments
           </p>
         </div>
-        <div className="patient-dashboard-status-pill">
-          <span className="patient-status-dot" />
-          <span>Active Patient</span>
-        </div>
       </div>
 
       {/* Welcome Banner Card */}
@@ -34,60 +124,47 @@ export default function PatientDashboard() {
           <User size={24} />
         </div>
         <div className="patient-welcome-info">
-          <h3>Welcome, Anuj Kumar</h3>
+          <h3>Welcome, {patientName}</h3>
           <div className="patient-welcome-badges">
-            <span className="patient-badge">Age: 25</span>
-            <span className="patient-badge">Patient ID: #P12345</span>
-            <span className="patient-badge patient-badge--health">
-              <Activity size={13} /> Health Status: Stable
-            </span>
+            {profileQuery.isLoading ? (
+              <span
+                className="patient-badge patient-age-skeleton"
+                aria-label="Loading age"
+              />
+            ) : (
+              <span className="patient-badge">Age: {patientAge}</span>
+            )}
           </div>
         </div>
       </div>
 
       {/* 4 Stat Cards */}
       <div className="patient-dashboard-page__stats">
-        <div className="patient-dashboard-page__stat patient-stat--blue">
-          <div className="patient-stat-top">
-            <div className="patient-stat-icon patient-stat-icon--blue">
-              <CalendarDays size={20} />
-            </div>
-            <span className="patient-stat-tag">Appointments</span>
-          </div>
-          <p className="patient-stat-value patient-dashboard-page__stat--blue">2</p>
+        {/* Appointments – live from API */}
+        <div className="patient-dashboard-page__stat">
+          <span className="patient-stat-tag">Appointments</span>
+          <p className="patient-stat-value">
+            {appointmentsQuery.isLoading ? "…" : upcomingCount}
+          </p>
           <span className="patient-stat-subtext">Upcoming visits</span>
         </div>
 
-        <div className="patient-dashboard-page__stat patient-stat--green">
-          <div className="patient-stat-top">
-            <div className="patient-stat-icon patient-stat-icon--green">
-              <Pill size={20} />
-            </div>
-            <span className="patient-stat-tag">Prescriptions</span>
-          </div>
-          <p className="patient-stat-value patient-dashboard-page__stat--green">5</p>
-          <span className="patient-stat-subtext">Active medications</span>
+        {/* Prescriptions – heading only */}
+        <div className="patient-dashboard-page__stat">
+          <span className="patient-stat-tag">Prescriptions</span>
         </div>
 
-        <div className="patient-dashboard-page__stat patient-stat--purple">
-          <div className="patient-stat-top">
-            <div className="patient-stat-icon patient-stat-icon--purple">
-              <FileText size={20} />
-            </div>
-            <span className="patient-stat-tag">Reports</span>
-          </div>
-          <p className="patient-stat-value patient-dashboard-page__stat--purple">3</p>
-          <span className="patient-stat-subtext">Lab & radiology</span>
+        {/* Reports – heading only */}
+        <div className="patient-dashboard-page__stat">
+          <span className="patient-stat-tag">Reports</span>
         </div>
 
-        <div className="patient-dashboard-page__stat patient-stat--red">
-          <div className="patient-stat-top">
-            <div className="patient-stat-icon patient-stat-icon--red">
-              <CreditCard size={20} />
-            </div>
-            <span className="patient-stat-tag">Billing</span>
-          </div>
-          <p className="patient-stat-value patient-dashboard-page__stat--red">₹1200</p>
+        {/* Billing – live from API */}
+        <div className="patient-dashboard-page__stat">
+          <span className="patient-stat-tag">Billing</span>
+          <p className="patient-stat-value">
+            {billsQuery.isLoading ? "…" : `₹${pendingBillTotal}`}
+          </p>
           <span className="patient-stat-subtext">Pending payment</span>
         </div>
       </div>
@@ -111,28 +188,50 @@ export default function PatientDashboard() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  <div className="patient-doctor-cell">
-                    <div className="patient-doctor-avatar">DR</div>
-                    <div>
-                      <strong>Dr. Raju</strong>
-                      <span className="patient-doctor-spec">General Physician</span>
+              {upcomingAppointment ? (
+                <tr>
+                  <td>
+                    <div className="patient-doctor-cell">
+                      <div className="patient-doctor-avatar">
+                        {(upcomingAppointment.doctorId?.name || "DR")
+                          .replace(/^Dr\.\s*/i, "")
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </div>
+                      <div>
+                        <strong>
+                          {upcomingAppointment.doctorId?.name || "Doctor"}
+                        </strong>
+                        <span className="patient-doctor-spec">
+                          {upcomingAppointment.doctorId?.specialization ||
+                            "Doctor Appointment"}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td>24 Apr 2026</td>
-                <td>
-                  <span className="patient-time-badge">
-                    <Clock size={13} /> 10:00 AM
-                  </span>
-                </td>
-                <td>
-                  <span className="patient-dashboard-page__badge">
-                    Scheduled
-                  </span>
-                </td>
-              </tr>
+                  </td>
+                  <td>
+                    {new Date(upcomingAppointment.date).toLocaleDateString(
+                      "en-IN",
+                      { day: "2-digit", month: "short", year: "numeric" }
+                    )}
+                  </td>
+                  <td>
+                    <span className="patient-time-badge">
+                      <Clock size={13} />{" "}
+                      {upcomingAppointment.time || "Not specified"}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="patient-dashboard-page__badge">
+                      {upcomingAppointment.status}
+                    </span>
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <td colSpan="4">No upcoming appointments</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -143,7 +242,10 @@ export default function PatientDashboard() {
         <div className="patient-dashboard-page__panel">
           <div className="patient-panel-header">
             <div className="patient-panel-title-wrap">
-              <Pill size={18} className="patient-panel-icon patient-panel-icon--green" />
+              <Pill
+                size={18}
+                className="patient-panel-icon patient-panel-icon--green"
+              />
               <h3>Prescriptions</h3>
             </div>
           </div>
@@ -172,7 +274,10 @@ export default function PatientDashboard() {
         <div className="patient-dashboard-page__panel">
           <div className="patient-panel-header">
             <div className="patient-panel-title-wrap">
-              <FileText size={18} className="patient-panel-icon patient-panel-icon--purple" />
+              <FileText
+                size={18}
+                className="patient-panel-icon patient-panel-icon--purple"
+              />
               <h3>Recent Reports</h3>
             </div>
           </div>
