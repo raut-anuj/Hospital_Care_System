@@ -7,12 +7,12 @@ import "../styles/Home.css";
 
 const Home = () => {
   const doctors = [
+   { name: "Dr. Khushboo", specialization: "Gynecologist" },
    { name: "Dr. Anuj", specialization: "Physician" },
    { name: "Dr. Raut", specialization: "Orthologist" },
    { name: "Dr. Mahit", specialization: "Cardiologist" },
    { name: "Dr. Bhudev", specialization: "Pediatrician" },
    { name: "Dr. Shant", specialization: "General Physician" },
-   { name: "Dr. Khushboo", specialization: "Cardiologist" },
   ];
 
   return (

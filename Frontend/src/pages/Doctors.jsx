@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import '../styles/Doctors.css';
 import Footer from '../components/Footer/Footer';
 
@@ -9,6 +10,17 @@ const doctors = [
 ];
 
 const Doctors = () => {
+  const navigate = useNavigate();
+
+  const handleBookAppointment = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/patient/appointment");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="page-shell page-shell--doctors">
       <section className="page-hero page-hero--compact">
@@ -25,7 +37,7 @@ const Doctors = () => {
             <h3>{doctor.name}</h3>
             <p className="doctor-specialization">{doctor.specialization}</p>
             <p className="doctor-experience">{doctor.experience} experience</p>
-            <button type="button">Book Appointment</button>
+            <button type="button" onClick={handleBookAppointment}>Book Appointment</button>
           </article>
         ))}
       </section>

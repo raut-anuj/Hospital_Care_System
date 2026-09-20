@@ -5,7 +5,7 @@ import "../../styles/DoctorSidebar.css";
 const menuItems = [
   { name: "Dashboard", path: "/doctor", exact: true },
   { name: "Appointment List", path: "/doctor/AppointmentList" },
-  { name: "Schedule Appointment", path: "/doctor/ScheduleAppointment" },
+  { name: "Appointment History", path: "/doctor/AppointmentHistory" },
 ];
 
 export default function DoctorSidebar() {

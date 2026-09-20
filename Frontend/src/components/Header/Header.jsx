@@ -1,11 +1,13 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Sun, Moon } from "lucide-react";
 import "../../styles/Header.css";
 
-export default function HospitalCareHeader({ mode = "public" }) {
+  export default function HospitalCareHeader({ mode = "public", showLogo = true }) {
   const navigate = useNavigate();
+
+  //Auth0 ka logout function lo, but yahan usko logoutFromAuth0 naam se use karo.
   const { isAuthenticated, logout: logoutFromAuth0 } = useAuth0();
   const isLoggedIn = mode === "authenticated";
 
@@ -43,8 +45,8 @@ export default function HospitalCareHeader({ mode = "public" }) {
   const showAuthButtons = mode === "public";
 
   return (
-    <header className="header">
-      {(mode === "public" || mode === "authenticated") && (
+    <header className={`header ${!showLogo ? "header--no-logo" : ""}`}>
+      {showLogo && (mode === "public" || mode === "authenticated") && (
         <button
           type="button"
           className="header__title"
