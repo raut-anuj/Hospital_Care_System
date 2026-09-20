@@ -28,7 +28,7 @@ import AdminAppointments from "../pages/admin/Apointment"
 
 import DoctorDashboard from "../pages/doctor/DoctorDashboard"
 import AppointmentList from "../pages/doctor/AppointmentList.jsx"
-import ScheduleAppointment from "../pages/doctor/ScheduleAppointment.jsx"
+import AppointmentHistory from "../pages/doctor/AppointmentHistory.jsx"
 
 import PatientAppointment from "../pages/patient/PatientAppointment"
 import PatientDashboard from "../pages/patient/PatientDashboard"
@@ -73,7 +73,7 @@ export {
     //pages--->doctor
     DoctorDashboard,
     AppointmentList,
-    ScheduleAppointment,
+    AppointmentHistory,
 
     //pages--->patient
     PatientDashboard,

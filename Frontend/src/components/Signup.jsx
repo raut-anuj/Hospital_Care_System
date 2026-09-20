@@ -71,14 +71,64 @@ function Signup() {
          />
          {errors.email && <p className="signup-field-error">{errors.email.message}</p>}
 
-         <label className="input-label">Sex</label>
-         <select className="input-field" {...register('sex', { required: 'Sex is required' })}>
-           <option value="">Select</option>
-           <option value="Male">Male</option>
-           <option value="Female">Female</option>
-           <option value="Other">Other</option>
-         </select>
-         {errors.sex && <p className="signup-field-error">{errors.sex.message}</p>}
+         <Input
+           label="Age"
+           type="number"
+           min="1"
+           max="120"
+           placeholder="Enter your age"
+           {...register('age', {
+             required: 'Age is required',
+             valueAsNumber: true,
+             min: { value: 1, message: 'Age must be at least 1' },
+             max: { value: 120, message: 'Age must be 120 or less' },
+           })}
+         />
+         {errors.age && <p className="signup-field-error">{errors.age.message}</p>}
+
+          <div className="input-wrapper">
+            <label className="input-label">Gender</label>
+            <div className="input-field-container">
+              <select className="input-field" {...register('gender', { required: 'Gender is required' })}>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          {errors.gender && <p className="signup-field-error">{errors.gender.message}</p>}
+
+          <Input
+            label="Phone Number"
+            type="tel"
+            placeholder="Enter your phone number"
+            {...register('contactNumber')}
+          />
+
+          <div className="input-wrapper">
+            <label className="input-label">Blood Group</label>
+            <div className="input-field-container">
+              <select className="input-field" {...register('bloodgroup')}>
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+          </div>
+
+          <Input
+            label="Address"
+            type="text"
+            placeholder="Enter your address"
+            {...register('address')}
+          />
 
          <Input
            label="Password"
@@ -86,7 +136,7 @@ function Signup() {
            placeholder="Create a password"
            {...register('password', {
              required: 'Password is required',
-             minLength: { value: 5, message: 'Password must be at least 5 characters' },
+             minLength: { value: 6, message: 'Password must be at least 6 characters' },
              validate: {
                noSpaces: (v) => (!/\s/.test(v)) || 'Password must not contain spaces',
                hasNumber: (v) => /[0-9]/.test(v) || 'Password must contain at least one number',
