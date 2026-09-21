@@ -141,7 +141,7 @@
 /* 4 Stat Cards Grid */
 .patient-dashboard-page__stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.25rem;
   margin-bottom: 1.75rem;
 }
