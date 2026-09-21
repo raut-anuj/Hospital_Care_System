@@ -32,6 +32,7 @@ import AppointmentHistory from "../pages/doctor/AppointmentHistory.jsx"
 
 import PatientAppointment from "../pages/patient/PatientAppointment"
 import PatientDashboard from "../pages/patient/PatientDashboard"
+import PatientBills from "../pages/patient/PatientBills.jsx"
 
 import ProtectedRoute from "../routes/ProtectedRoute"
 
@@ -78,6 +79,7 @@ export {
     //pages--->patient
     PatientDashboard,
     PatientAppointment,
+    PatientBills,
     PatientSidebar,
 
     ProtectedRoute,

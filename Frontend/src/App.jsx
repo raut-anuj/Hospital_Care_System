@@ -15,6 +15,7 @@ import {
   DoctorDashboard,
   PatientDashboard,
   PatientAppointment,
+  PatientBills,
   ProtectedRoute,
   Unauthorized,
   Home,
@@ -75,6 +76,7 @@ export default function App() {
       >
         <Route index element={<PatientDashboard />} />
         <Route path="appointment" element={<PatientAppointment />} />
+        <Route path="bills" element={<PatientBills />} />
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>
