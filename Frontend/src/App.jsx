@@ -8,14 +8,18 @@ import {
   PatientLayout,
   Dashboard,
   AdminAppointments,
+  AdminBills,
   Patients,
   AdminDoctors,
   AppointmentList,
   AppointmentHistory,
   DoctorDashboard,
+  DoctorProfile,
   PatientDashboard,
   PatientAppointment,
   PatientBills,
+  PatientProfile,
+  PatientMedicalRecords,
   ProtectedRoute,
   Unauthorized,
   Home,
@@ -49,6 +53,7 @@ export default function App() {
         <Route path="doctors" element={<AdminDoctors />} />
         <Route path="patients" element={<Patients />} />
         <Route path="appointments" element={<AdminAppointments />} />
+        <Route path="bills" element={<AdminBills />} />
       </Route>
 
       {/* Doctor routes */}
@@ -63,6 +68,7 @@ export default function App() {
         <Route index element={<DoctorDashboard />} />
         <Route path="AppointmentList" element={<AppointmentList />} />
         <Route path="AppointmentHistory" element={<AppointmentHistory />} />
+        <Route path="profile" element={<DoctorProfile />} />
       </Route>
 
       {/* Patient routes */}
@@ -77,6 +83,8 @@ export default function App() {
         <Route index element={<PatientDashboard />} />
         <Route path="appointment" element={<PatientAppointment />} />
         <Route path="bills" element={<PatientBills />} />
+        <Route path="profile" element={<PatientProfile />} />
+        <Route path="medical-records" element={<PatientMedicalRecords />} />
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>

@@ -24,15 +24,19 @@ import PatientLayout from "../layout/PatientLayout"
 import Dashboard from "../pages/admin/Dashboard";
 import AdminDoctors from "../pages/admin/Doctor";
 import Patients from "../pages/admin/Patient";
-import AdminAppointments from "../pages/admin/Apointment"
+import AdminAppointments from "../pages/admin/Apointment";
+import AdminBills from "../pages/admin/AdminBills";
 
 import DoctorDashboard from "../pages/doctor/DoctorDashboard"
 import AppointmentList from "../pages/doctor/AppointmentList.jsx"
 import AppointmentHistory from "../pages/doctor/AppointmentHistory.jsx"
+import DoctorProfile from "../pages/doctor/DoctorProfile.jsx"
 
 import PatientAppointment from "../pages/patient/PatientAppointment"
 import PatientDashboard from "../pages/patient/PatientDashboard"
 import PatientBills from "../pages/patient/PatientBills.jsx"
+import PatientProfile from "../pages/patient/PatientProfile.jsx"
+import PatientMedicalRecords from "../pages/patient/PatientMedicalRecords.jsx"
 
 import ProtectedRoute from "../routes/ProtectedRoute"
 
@@ -70,16 +74,20 @@ export {
     AdminDoctors,
     Patients,
     AdminAppointments,
+    AdminBills,
 
     //pages--->doctor
     DoctorDashboard,
     AppointmentList,
     AppointmentHistory,
+    DoctorProfile,
 
     //pages--->patient
     PatientDashboard,
     PatientAppointment,
     PatientBills,
+    PatientProfile,
+    PatientMedicalRecords,
     PatientSidebar,
 
     ProtectedRoute,

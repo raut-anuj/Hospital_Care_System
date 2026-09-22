@@ -13,8 +13,8 @@ import {
     updateStaffRole,
     deleteStaff
 } from "../controllers/staff.controller.js";
-import {upload} from "../middelwares/multer.middelwares.js"
-import { verifyJWT } from "../middelwares/auth.middelwares.js";
+import { upload } from "../middlewares/multer.middleware.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router()
  
