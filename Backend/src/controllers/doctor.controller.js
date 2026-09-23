@@ -5,8 +5,9 @@ import { Doctor } from "../models/doctor.model.js";
 import jwt from "jsonwebtoken"
 import { Patient } from "../models/patient.model.js"
 import { Appointment } from "../models/appointment.model.js";
+import { Bill } from "../models/bill.model.js";
 import { MedicalRecord } from "../models/medicalRecord.model.js";
-import { get } from "http";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const generateAccessAndRefreshToken = async(doctorId)=>{
     try{
@@ -27,22 +28,6 @@ const generateAccessAndRefreshToken = async(doctorId)=>{
     throw new ApiError(500, "Error occur while generating Access and Refresh Token.")
 }
 };
-
-const getProfile = asyncHandler(async(req,res)=>{
-    const { email } = req.body
-
-    if(!email || email.trim()==="" )
-        throw new ApiError(400, "Email is required")
-
-    const doctor = await Doctor.findOne({email}).select("-password -refreshToken");
-
-    if(!doctor)
-        throw new ApiError(400, " Doctor not found.") 
-
-    res
-    .status(200)
-    .json(new ApiResponse(200, doctor, {}))
-});
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
     // Get refresh token from [cookies or body]
@@ -138,27 +123,40 @@ const registerUser = asyncHandler(async(req,res)=>{
 
 });
 
+const getProfile = asyncHandler(async (req, res) => {
+    const doctorId = req.user?._id || req.doctor?._id;
+    if (!doctorId) {
+        throw new ApiError(401, "Unauthorized");
+    }
+
+    const doctor = await Doctor.findById(doctorId).select("-password -refreshToken");
+    if (!doctor) {
+        throw new ApiError(404, "Doctor not found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, doctor, "Doctor profile fetched successfully"));
+});
+
 const updateProfile = asyncHandler(async(req,res)=>{
-    const{ email, contactNumber, age, address }=req.body
+    const{ email, contactNumber, age, address, fee, qualification, specialization }=req.body
 
-   const doctor = await Doctor.findOne({email})
-
-// Agar email mil gaya,
-// 👉 Toh doctor ka poora data aa jata hai (jo bhi fields model me hain).
+    const doctorId = req.user?._id || req.doctor?._id;
+    const doctor = await Doctor.findById(doctorId)
 
     if(!doctor)
         throw new ApiError(400, "Doctor not found")
 
-        contactNumber: doctor.contactNumber;
-        age: doctor.age;
-        address: doctor.address;
-        await Doctor.save();
+    if (contactNumber !== undefined) doctor.contactNumber = contactNumber;
+    if (age !== undefined) doctor.age = age;
+    if (address !== undefined) doctor.address = address;
+    if (fee !== undefined) doctor.fee = fee;
+    if (qualification !== undefined) doctor.qualification = qualification;
+    if (specialization !== undefined) doctor.specialization = specialization;
+    if (email !== undefined) doctor.email = email.trim().toLowerCase();
 
-   res.status(200).json(new ApiResponse(200, {
-        contactNumber: doctor.contactNumber,
-        age: doctor.age,
-        address: doctor.address
-    }, "Details Updated"));
+    await doctor.save();
+
+   res.status(200).json(new ApiResponse(200, doctor, "Details Updated"));
 });
  
 const loginUser = asyncHandler(async(req,res)=>{
@@ -231,13 +229,12 @@ const gettAllpatient = asyncHandler(async(req,res)=>{
     if(!doctor)
         throw new ApiError (400, "Invalid Doctor Id.")
 
-    const allPatient = await MedicalRecord.find({ doctorId: doctor._id })
-        .populate("patientId", "name email")
-        .lean();
+    // Get distinct patientIds from Appointments assigned to this doctor
+    const uniquePatientIds = await Appointment.find({ doctorId: doctor._id }).distinct("patientId");
 
     return res
         .status(200)
-        .json(new ApiResponse(200, allPatient, "All Records."));
+        .json(new ApiResponse(200, uniquePatientIds, "All unique patients count."));
 });
 
 const changeCurrentPassword = asyncHandler(async(req, res)=>{
@@ -296,8 +293,12 @@ const getTodayAppointments = asyncHandler(async (req, res) => {
     const endOfDay = new Date();
     endOfDay.setHours(23, 59, 59, 999);
 
+    const paidBills = await Bill.find({ billStatus: "PAID" }).select("appointmentId");
+    const paidAppointmentIds = paidBills.map((b) => b.appointmentId);
+
     const appointment = await Appointment.find({
         doctorId: doctor._id,
+        _id: { $in: paidAppointmentIds },
         date: {
             $gte: startOfDay,
             $lte: endOfDay
@@ -325,13 +326,21 @@ const getAllAppointments = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Doctor not found.");
   }
 
-  const filter = { doctorId: doctor._id };
+  // Get IDs of all paid bills
+  const paidBills = await Bill.find({ billStatus: "PAID" }).select("appointmentId");
+  const paidAppointmentIds = paidBills.map((b) => b.appointmentId);
+
+  const filter = { 
+    doctorId: doctor._id,
+    _id: { $in: paidAppointmentIds }
+  };
+
   if (req.query.status) {
     filter.status = req.query.status.toLowerCase();
   }
 
   const appointments = await Appointment.find(filter)
-    .populate("patientId", "name email age gender")
+    .populate("patientId", "name email age gender bloodgroup")
     .sort({ date: 1 });
 
   return res
@@ -356,7 +365,7 @@ const updateAppointmentStatus = asyncHandler(async (req, res) => {
     { _id: appointmentId, doctorId },
     { status: normalizedStatus },
     { new: true }
-  ).populate("patientId", "name email age gender");
+  ).populate("patientId", "name email age gender bloodgroup");
 
   if (!appointment) {
     throw new ApiError(404, "Appointment not found or not assigned to this doctor");
@@ -365,6 +374,38 @@ const updateAppointmentStatus = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, appointment, `Appointment status updated to ${normalizedStatus}`));
+});
+
+const addMedicalRecord = asyncHandler(async (req, res) => {
+  const { patientId, diagnosedWith, notes, date } = req.body;
+  const doctorId = req.user?._id || req.doctor?._id;
+
+  if (!patientId || !diagnosedWith || !notes || !date) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const fileLocalPath = req.file?.path;
+  if (!fileLocalPath) {
+    throw new ApiError(400, "Prescription file is required");
+  }
+
+  const prescriptionFile = await uploadOnCloudinary(fileLocalPath);
+  if (!prescriptionFile?.url) {
+    throw new ApiError(500, "Failed to upload prescription file");
+  }
+
+  const medicalRecord = await MedicalRecord.create({
+    patientId,
+    doctorId,
+    diagnosedWith,
+    notes,
+    date,
+    prescriptionFile: prescriptionFile.url
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, medicalRecord, "Medical record created successfully"));
 });
 
 export {
@@ -381,4 +422,5 @@ export {
   getTodayAppointments,
   getAllAppointments,
   updateAppointmentStatus,
+  addMedicalRecord,
 };

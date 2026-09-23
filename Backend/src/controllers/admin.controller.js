@@ -267,6 +267,18 @@ const allPatientsList = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, patients, "All Patients list"));
 });
+
+const allAppointmentsList = asyncHandler(async (req, res) => {
+  const appointments = await Appointment.find()
+    .populate("patientId", "name email age gender bloodgroup contactNumber")
+    .populate("doctorId", "name email specialization fee")
+    .sort({ date: -1, time: -1 });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, appointments, "All Appointments list"));
+});
+
            
 const allDocSpec = asyncHandler(async(req,res)=>{
     const admin = await Admin.findById(req.params.id)
@@ -528,19 +540,18 @@ const getMonthlyRevenue = asyncHandler(async (req, res) => {
 });
 
 const getAllBills = asyncHandler(async (req, res) => {
-   const admin = await findById(req.params.id)
-   if(!admin)
-    throw new ApiError(400, "Inavlid Admin.")
+   const bills = await Bill.find()
+     .populate("patientId", "name email")
+     .populate({
+       path: "appointmentId",
+       select: "date time",
+       populate: { path: "doctorId", select: "name specialization" },
+     })
+     .sort({ createdAt: -1 });
 
-   const bill = await Bill.find();
-
-   if( bill.length == 0 )
-    throw new ApiError(400, "No bill found.")
-
-    return res
-    .status(200) 
-    .json(new ApiResponse(200, bill, "Total Bills"))
-
+   return res
+     .status(200)
+     .json(new ApiResponse(200, bills, "Total Bills"));
 });
 
 const dateWiseBills = asyncHandler(async (req, res) => {
@@ -587,6 +598,7 @@ export {
     allDoctorsList, 
     allStaffsList, 
     allPatientsList,
+    allAppointmentsList,
     
     getHospitalRevenue,
     getPaymentsByMethod,
