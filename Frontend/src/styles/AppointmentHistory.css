@@ -10,10 +10,19 @@
   color: #f3f4f6;
 }
 
+.appointment-history-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 .appointment-history-page__title {
   font-size: 2rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin: 0;
 }
 
 .dark .appointment-history-page__title {

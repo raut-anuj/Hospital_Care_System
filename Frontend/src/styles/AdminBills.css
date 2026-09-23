@@ -1,0 +1,269 @@
+/* ─── Page Wrapper ───────────────────────────────────────────── */
+.admin-bills-page {
+  min-height: 100vh;
+  background: #f3f4f6;
+  padding: 1.5rem;
+  padding-bottom: 6rem;
+  color: #111827;
+}
+.dark .admin-bills-page {
+  background: #0f172a;
+  color: #f3f4f6;
+}
+
+/* ─── Header ─────────────────────────────────────────────────── */
+.admin-bills-header {
+  margin-bottom: 1.5rem;
+}
+.admin-bills-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+.dark .admin-bills-title { color: #f9fafb; }
+
+.admin-bills-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin: 0;
+}
+.dark .admin-bills-subtitle { color: #9ca3af; }
+
+/* ─── Stat Cards ─────────────────────────────────────────────── */
+.admin-bills-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-bills-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem 1rem;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+  border-left: 4px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.admin-bills-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 24px -4px rgba(15, 23, 42, 0.12);
+}
+.dark .admin-bills-card {
+  background: #1f2937;
+  border-right: 1px solid #374151;
+  border-top: 1px solid #374151;
+  border-bottom: 1px solid #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+.dark .admin-bills-card:hover {
+  box-shadow: 0 16px 24px -4px rgba(0, 0, 0, 0.4);
+}
+
+.admin-bills-card--blue   { border-left-color: #2563eb; }
+.admin-bills-card--green  { border-left-color: #16a34a; }
+.admin-bills-card--red    { border-left-color: #dc2626; }
+.admin-bills-card--purple { border-left-color: #7c3aed; }
+
+.admin-bills-card__value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+  line-height: 1.1;
+}
+.admin-bills-card__value--blue   { color: #2563eb; }
+.admin-bills-card__value--green  { color: #16a34a; }
+.admin-bills-card__value--red    { color: #dc2626; }
+.admin-bills-card__value--purple { color: #7c3aed; }
+.dark .admin-bills-card__value--blue   { color: #60a5fa; }
+.dark .admin-bills-card__value--green  { color: #4ade80; }
+.dark .admin-bills-card__value--red    { color: #f87171; }
+.dark .admin-bills-card__value--purple { color: #a78bfa; }
+
+.admin-bills-card__label {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+.dark .admin-bills-card__label { color: #9ca3af; }
+
+/* ─── Filter Tabs ────────────────────────────────────────────── */
+.admin-bills-filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.admin-bills-filter-btn {
+  padding: 0.4rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1.5px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.admin-bills-filter-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+.admin-bills-filter-btn--active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+.dark .admin-bills-filter-btn {
+  background: #1f2937;
+  border-color: #374151;
+  color: #9ca3af;
+}
+.dark .admin-bills-filter-btn:hover {
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+.dark .admin-bills-filter-btn--active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+/* ─── Table ──────────────────────────────────────────────────── */
+.admin-bills-table-wrap {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+  overflow-x: auto;
+}
+.dark .admin-bills-table-wrap {
+  background: #1f2937;
+  border: 1px solid #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.admin-bills-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-bills-table th {
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+.dark .admin-bills-table th {
+  background: #111827;
+  color: #9ca3af;
+  border-bottom-color: #374151;
+}
+
+.admin-bills-table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.875rem;
+  color: #374151;
+}
+.dark .admin-bills-table td {
+  border-bottom-color: #374151;
+  color: #e5e7eb;
+}
+.admin-bills-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-bills-table__num {
+  font-weight: 600;
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+.admin-bills-table__bold {
+  font-weight: 600;
+  color: #111827;
+}
+.dark .admin-bills-table__bold { color: #f9fafb; }
+
+.admin-bills-table__amount {
+  font-weight: 600;
+  color: #111827;
+}
+.dark .admin-bills-table__amount { color: #f3f4f6; }
+
+.admin-bills-table__empty {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* ─── Doctor Cell ────────────────────────────────────────────── */
+.admin-bills-doctor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.admin-bills-doctor__name {
+  font-weight: 600;
+  color: #111827;
+}
+.dark .admin-bills-doctor__name { color: #f3f4f6; }
+.admin-bills-doctor__spec {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+.dark .admin-bills-doctor__spec { color: #9ca3af; }
+
+/* ─── Status Badge ───────────────────────────────────────────── */
+.ab-status {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.ab-status--paid   { background: #dcfce7; color: #15803d; }
+.ab-status--unpaid { background: #fee2e2; color: #b91c1c; }
+.dark .ab-status--paid   { background: rgba(22,163,74,0.18);  color: #86efac; }
+.dark .ab-status--unpaid { background: rgba(220,38,38,0.18);  color: #fca5a5; }
+
+/* ─── Skeleton Loaders ───────────────────────────────────────── */
+.ab-skel {
+  display: block;
+  border-radius: 0.35rem;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: ab-shimmer 1.4s infinite;
+  height: 0.9rem;
+}
+.ab-skel--value { width: 60%; height: 1.8rem; border-radius: 0.5rem; }
+.ab-skel--md    { width: 65%; }
+.ab-skel--sm    { width: 45%; }
+.ab-skel--xs    { width: 28%; }
+.ab-skel--pill  { width: 22%; height: 1.4rem; border-radius: 9999px; }
+
+@keyframes ab-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.dark .ab-skel {
+  background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+  background-size: 200% 100%;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .admin-bills-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .admin-bills-stats { grid-template-columns: 1fr; }
+  .admin-bills-filters { flex-wrap: wrap; }
+}
