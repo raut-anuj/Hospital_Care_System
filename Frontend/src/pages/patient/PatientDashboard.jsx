@@ -1,12 +1,8 @@
 import React from "react";
 import {
   CalendarDays,
-  Pill,
-  FileText,
   User,
   Clock,
-  CheckCircle2,
-  AlertCircle,
 } from "lucide-react";
 import "../../styles/PatientDashboard.css";
 import API_URL from "../../api/api.js";
@@ -42,11 +38,13 @@ export default function PatientDashboard() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const result = await response.json();
-      if (!response.ok)
+      if (!response.ok) {
+        if (response.status === 400 || response.status === 404) return [];
         throw new Error(
-          result?.message || "Failed to fetch appointments"
+          result?.message || "Failed to fetch patient appointments"
         );
-      return Array.isArray(result?.data) ? result.data : [];
+      }
+      return result?.data || [];
     },
   });
 
@@ -59,9 +57,11 @@ export default function PatientDashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const result = await response.json();
-      if (!response.ok)
+      if (!response.ok) {
+        if (response.status === 400 || response.status === 404) return [];
         throw new Error(result?.message || "Failed to fetch bills");
-      return Array.isArray(result?.data) ? result.data : [];
+      }
+      return (result?.data || []).filter((bill) => bill.appointmentId != null);
     },
   });
 
@@ -81,44 +81,55 @@ export default function PatientDashboard() {
   }, []);
 
   React.useEffect(() => {
-    if (profileQuery.data?.name) setPatientName(profileQuery.data.name);
-    if (
-      profileQuery.data?.age !== undefined &&
-      profileQuery.data?.age !== null
-    )
-      setPatientAge(profileQuery.data.age);
+    if (profileQuery.data) {
+      if (profileQuery.data.name) setPatientName(profileQuery.data.name);
+      if (profileQuery.data.age !== undefined && profileQuery.data.age !== null)
+        setPatientAge(profileQuery.data.age);
+    }
   }, [profileQuery.data]);
 
   // ── Derived values ────────────────────────────────────────────────────────
-  const allAppointments = appointmentsQuery.data ?? [];
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const appointmentsList = appointmentsQuery.data || [];
+  const billsList = billsQuery.data || [];
 
-  const upcomingAppointments = allAppointments
-    .filter((a) => a.status === "scheduled" && new Date(a.date) >= today)
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const upcomingCount = appointmentsList.filter(
+    (app) => app.status !== "cancelled"
+  ).length;
 
-  const upcomingCount = upcomingAppointments.length;
-  const upcomingAppointment = upcomingAppointments[0] ?? null;
+  const upcomingAppointment = appointmentsList.find(
+    (app) => app.status !== "cancelled"
+  );
 
-  const bills = billsQuery.data ?? [];
-  const pendingBillTotal = bills.reduce(
-    (sum, b) => sum + ((b.totalAmount ?? 0) - (b.paidAmount ?? 0)),
+  const unpaidInvoicesList = billsList.filter((bill) => bill.billStatus === "UNPAID");
+  const unpaidInvoicesCount = unpaidInvoicesList.length;
+
+  const pendingBillTotal = unpaidInvoicesList.reduce(
+    (acc, bill) => acc + (bill.totalAmount || 0),
     0
   );
 
+  // Generate real patient ID from MongoDB _id or fallback
+  const patientId = profileQuery.data?._id
+    ? `#PAT-${profileQuery.data._id.slice(-4).toUpperCase()}`
+    : profileQuery.data?.id
+    ? `#PAT-${profileQuery.data.id.slice(-4).toUpperCase()}`
+    : "#PAT-8821";
+
   return (
     <div className="patient-dashboard-page">
+      {/* Top Header */}
       <div className="patient-dashboard-header">
         <div>
-          <h2 className="patient-dashboard-page__title">Patient Dashboard</h2>
+          <h2 className="patient-dashboard-page__title">
+            Welcome, {patientName}
+          </h2>
           <p className="patient-dashboard-page__subtitle">
-            Welcome to your health overview and appointments
+            Manage your appointments and healthcare activity
           </p>
         </div>
       </div>
 
-      {/* Welcome Banner Card */}
+      {/* Welcome Banner */}
       <div className="patient-dashboard-page__welcome">
         <div className="patient-welcome-avatar">
           <User size={24} />
@@ -126,19 +137,20 @@ export default function PatientDashboard() {
         <div className="patient-welcome-info">
           <h3>Welcome, {patientName}</h3>
           <div className="patient-welcome-badges">
-            {profileQuery.isLoading ? (
-              <span
-                className="patient-badge patient-age-skeleton"
-                aria-label="Loading age"
-              />
-            ) : (
-              <span className="patient-badge">Age: {patientAge}</span>
-            )}
+            <span className="patient-badge">Patient ID: {patientId}</span>
+            <span className="patient-badge">
+              Age:{" "}
+              {profileQuery.isLoading ? (
+                <span className="patient-badge patient-age-skeleton"></span>
+              ) : (
+                patientAge || "N/A"
+              )}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* 4 Stat Cards */}
+      {/* 3 Stat Cards */}
       <div className="patient-dashboard-page__stats">
         {/* Appointments – live from API */}
         <div className="patient-dashboard-page__stat">
@@ -149,14 +161,13 @@ export default function PatientDashboard() {
           <span className="patient-stat-subtext">Upcoming visits</span>
         </div>
 
-        {/* Prescriptions – heading only */}
+        {/* Unpaid Invoices – live from API */}
         <div className="patient-dashboard-page__stat">
-          <span className="patient-stat-tag">Prescriptions</span>
-        </div>
-
-        {/* Reports – heading only */}
-        <div className="patient-dashboard-page__stat">
-          <span className="patient-stat-tag">Reports</span>
+          <span className="patient-stat-tag">Unpaid Invoices</span>
+          <p className="patient-stat-value">
+            {billsQuery.isLoading ? "…" : unpaidInvoicesCount}
+          </p>
+          <span className="patient-stat-subtext">Bills pending payment</span>
         </div>
 
         {/* Billing – live from API */}
@@ -165,7 +176,7 @@ export default function PatientDashboard() {
           <p className="patient-stat-value">
             {billsQuery.isLoading ? "…" : `₹${pendingBillTotal}`}
           </p>
-          <span className="patient-stat-subtext">Pending payment</span>
+          <span className="patient-stat-subtext">Total pending amount</span>
         </div>
       </div>
 
@@ -234,77 +245,6 @@ export default function PatientDashboard() {
               )}
             </tbody>
           </table>
-        </div>
-      </div>
-
-      {/* 2-Column Section: Prescriptions & Recent Reports */}
-      <div className="patient-details-grid">
-        <div className="patient-dashboard-page__panel">
-          <div className="patient-panel-header">
-            <div className="patient-panel-title-wrap">
-              <Pill
-                size={18}
-                className="patient-panel-icon patient-panel-icon--green"
-              />
-              <h3>Prescriptions</h3>
-            </div>
-          </div>
-          <ul className="patient-item-list">
-            <li className="patient-item-card">
-              <div className="patient-item-icon patient-item-icon--green">
-                <Pill size={16} />
-              </div>
-              <div className="patient-item-content">
-                <strong>Paracetamol 500mg</strong>
-                <span>Twice daily • After meals</span>
-              </div>
-            </li>
-            <li className="patient-item-card">
-              <div className="patient-item-icon patient-item-icon--green">
-                <Pill size={16} />
-              </div>
-              <div className="patient-item-content">
-                <strong>Vitamin D3</strong>
-                <span>Once daily • Morning</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <div className="patient-dashboard-page__panel">
-          <div className="patient-panel-header">
-            <div className="patient-panel-title-wrap">
-              <FileText
-                size={18}
-                className="patient-panel-icon patient-panel-icon--purple"
-              />
-              <h3>Recent Reports</h3>
-            </div>
-          </div>
-          <ul className="patient-item-list">
-            <li className="patient-item-card">
-              <div className="patient-item-icon patient-item-icon--purple">
-                <FileText size={16} />
-              </div>
-              <div className="patient-item-content">
-                <strong>Blood Test (CBC)</strong>
-                <span className="patient-report-badge patient-report-badge--normal">
-                  <CheckCircle2 size={12} /> Normal
-                </span>
-              </div>
-            </li>
-            <li className="patient-item-card">
-              <div className="patient-item-icon patient-item-icon--purple">
-                <FileText size={16} />
-              </div>
-              <div className="patient-item-content">
-                <strong>Chest X-Ray</strong>
-                <span className="patient-report-badge patient-report-badge--pending">
-                  <AlertCircle size={12} /> Pending Review
-                </span>
-              </div>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
