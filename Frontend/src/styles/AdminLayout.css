@@ -10,7 +10,9 @@
 
 .admin-layout__main {
   flex: 1;
-  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
   overflow-y: auto;
   background-color: #f3f4f6;
   color: #111827;
