@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import "../../styles/AppointmentList.css";
 import "../../styles/AppointmentHistory.css";
 import API_URL from "../../api/api.js";
 
 export default function AppointmentHistory() {
+  const [activeTab, setActiveTab] = useState("completed");
   const token = localStorage.getItem("token");
 
   const { data: appointments = [], isLoading } = useQuery({
@@ -20,12 +22,44 @@ export default function AppointmentHistory() {
   });
 
   const appointmentHistory = appointments
-    .filter((a) => ["completed", "cancelled"].includes((a.status || "").toLowerCase()))
+    .filter((a) => {
+      if (activeTab === "all") return true;
+      return (a.status || "").toLowerCase() === activeTab;
+    })
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
     <div className="appointment-history-page">
-      <h2 className="appointment-history-page__title">Appointment History</h2>
+      <div className="appointment-history-page__header">
+        <h2 className="appointment-history-page__title">Appointment History</h2>
+
+        <div className="appointment-status-tabs">
+          <button
+            className={`status-tab ${activeTab === "scheduled" ? "status-tab--active" : ""}`}
+            onClick={() => setActiveTab("scheduled")}
+          >
+            Scheduled
+          </button>
+          <button
+            className={`status-tab ${activeTab === "completed" ? "status-tab--active" : ""}`}
+            onClick={() => setActiveTab("completed")}
+          >
+            Completed
+          </button>
+          <button
+            className={`status-tab ${activeTab === "cancelled" ? "status-tab--active" : ""}`}
+            onClick={() => setActiveTab("cancelled")}
+          >
+            Cancelled
+          </button>
+          <button
+            className={`status-tab ${activeTab === "all" ? "status-tab--active" : ""}`}
+            onClick={() => setActiveTab("all")}
+          >
+            All
+          </button>
+        </div>
+      </div>
 
       <div className="appointment-history-page__table-wrap">
         <table className="appointment-history-page__table">

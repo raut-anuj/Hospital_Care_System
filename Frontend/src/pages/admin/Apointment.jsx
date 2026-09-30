@@ -1,67 +1,33 @@
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import "../../styles/Apointment.css";
+import API_URL from "../../api/api.js";
 
 export default function Appointments() {
-  const [appointments, setAppointments] = useState([
-    { id: 1, patient: "Rahul Sharma", doctor: "Dr. Mehta", date: "2026-04-22", time: "10:00 AM" },
-    { id: 2, patient: "Ankit Verma", doctor: "Dr. Khan", date: "2026-04-23", time: "12:00 PM" },
-  ]);
-
   const [search, setSearch] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [editId, setEditId] = useState(null);
+  const token = localStorage.getItem("token");
 
-  const [form, setForm] = useState({
-    patient: "",
-    doctor: "",
-    date: "",
-    time: "",
+  const { data: appointments = [], isLoading } = useQuery({
+    queryKey: ["admin-appointments"],
+    enabled: Boolean(token),
+    queryFn: async () => {
+      const res = await fetch(`${API_URL}/api/v1/admin/appointmentsList`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Failed to fetch appointments");
+      return data?.data || [];
+    },
   });
 
   const filtered = appointments.filter((a) =>
-    a.patient.toLowerCase().includes(search.toLowerCase())
+    (a.patientId?.name || "").toLowerCase().includes(search.toLowerCase())
   );
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (editId) {
-      setAppointments(appointments.map((a) => a.id === editId ? { ...a, ...form } : a));
-    } else {
-      setAppointments([...appointments, { id: Date.now(), ...form }]);
-    }
-
-    setForm({ patient: "", doctor: "", date: "", time: "" });
-    setShowModal(false);
-    setEditId(null);
-  };
-
-  const handleEdit = (a) => {
-    setForm({
-      patient: a.patient,
-      doctor: a.doctor,
-      date: a.date,
-      time: a.time,
-    });
-    setEditId(a.id);
-    setShowModal(true);
-  };
-
-  const handleDelete = (id) => {
-    setAppointments(appointments.filter((a) => a.id !== id));
-  };
 
   return (
     <div className="appointments-page">
       <div className="appointments-header">
         <h2 className="appointments-title">Appointments</h2>
-        <button onClick={() => setShowModal(true)} className="appointments-add-btn">
-          Add Appointment
-        </button>
       </div>
 
       <input
@@ -80,49 +46,46 @@ export default function Appointments() {
               <th>Doctor</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Actions</th>
+              <th>Status</th>
             </tr>
           </thead>
 
           <tbody>
-            {filtered.map((a) => (
-              <tr key={a.id} className="appointments-table__row">
-                <td>{a.id}</td>
-                <td>{a.patient}</td>
-                <td>{a.doctor}</td>
-                <td>{a.date}</td>
-                <td>{a.time}</td>
-                <td className="appointments-actions">
-                  <button onClick={() => handleEdit(a)} className="appointments-edit-btn">Edit</button>
-                  <button onClick={() => handleDelete(a.id)} className="appointments-delete-btn">Delete</button>
-                </td>
+            {isLoading ? (
+              <tr>
+                <td colSpan="6" className="appointments-table__empty">Loading appointments...</td>
               </tr>
-            ))}
+            ) : filtered.length > 0 ? (
+              filtered.map((a, index) => (
+                <tr key={a._id || index} className="appointments-table__row">
+                  <td>{index + 1}</td>
+                  <td>{a.patientId?.name || "N/A"}</td>
+                  <td>{a.doctorId?.name || "N/A"}</td>
+                  <td>
+                    {a.date
+                      ? new Date(a.date).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "N/A"}
+                  </td>
+                  <td>{a.time || "N/A"}</td>
+                  <td>
+                     <span className={`status-pill status-pill--${a.status || "scheduled"}`}>
+                        {a.status || "scheduled"}
+                     </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+               <tr>
+                <td colSpan="6" className="appointments-table__empty">No appointments found.</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
-
-      {showModal && (
-        <div className="appointments-modal-backdrop">
-          <div className="appointments-modal">
-            <h2 className="appointments-modal__title">
-              {editId ? "Edit Appointment" : "Add Appointment"}
-            </h2>
-
-            <form onSubmit={handleSubmit} className="appointments-form">
-              <input name="patient" value={form.patient} onChange={handleChange} placeholder="Patient Name" className="appointments-input" required />
-              <input name="doctor" value={form.doctor} onChange={handleChange} placeholder="Doctor Name" className="appointments-input" required />
-              <input name="date" type="date" value={form.date} onChange={handleChange} className="appointments-input" required />
-              <input name="time" type="time" value={form.time} onChange={handleChange} className="appointments-input" required />
-
-              <div className="appointments-modal__actions">
-                <button type="button" onClick={() => setShowModal(false)} className="appointments-cancel-btn">Cancel</button>
-                <button type="submit" className="appointments-submit-btn">{editId ? "Update" : "Add"}</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
