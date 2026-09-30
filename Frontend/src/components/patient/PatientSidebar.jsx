@@ -6,6 +6,9 @@ import "../../styles/PatientSidebar.css";
 const menuItems = [
   { name: "Dashboard", path: "/patient", exact: true },
   { name: "Appointment", path: "/patient/appointment" },
+  { name: "Medical Records", path: "/patient/medical-records" },
+  { name: "Invoices & Bills", path: "/patient/bills" },
+  { name: "Profile Settings", path: "/patient/profile" },
 ];
 
 export default function PatientSidebar() {

@@ -105,7 +105,6 @@ export default function Dashboard() {
         <div className="dashboard-card">
           <div className="dashboard-card__header">
             <h3 className="dashboard-card__title">Total Patients</h3>
-            <span className="dashboard-card__icon dashboard-card__icon--green">👥</span>
           </div>
           <p className="dashboard-card__value dashboard-card__value--green">
             {loading ? "..." : totalPatients}
@@ -116,7 +115,6 @@ export default function Dashboard() {
         <div className="dashboard-card">
           <div className="dashboard-card__header">
             <h3 className="dashboard-card__title">Active Doctors</h3>
-            <span className="dashboard-card__icon dashboard-card__icon--blue">👨‍⚕️</span>
           </div>
           <p className="dashboard-card__value dashboard-card__value--blue">
             {loading ? "..." : totalDoctors}
@@ -127,7 +125,6 @@ export default function Dashboard() {
         <div className="dashboard-card">
           <div className="dashboard-card__header">
             <h3 className="dashboard-card__title">Hospital Staff</h3>
-            <span className="dashboard-card__icon dashboard-card__icon--purple">🏥</span>
           </div>
           <p className="dashboard-card__value dashboard-card__value--purple">
             {loading ? "..." : totalStaff}
@@ -138,7 +135,6 @@ export default function Dashboard() {
         <div className="dashboard-card">
           <div className="dashboard-card__header">
             <h3 className="dashboard-card__title">Appointments</h3>
-            <span className="dashboard-card__icon dashboard-card__icon--indigo">📅</span>
           </div>
           <p className="dashboard-card__value dashboard-card__value--indigo">
             {loading ? "..." : totalAppointments}
@@ -249,7 +245,7 @@ export default function Dashboard() {
           {/* Blood Group Emergency Registry */}
           <div className="dashboard-panel">
             <div className="dashboard-panel__header">
-              <h3 className="dashboard-panel__title">🩸 Blood Group Registry</h3>
+              <h3 className="dashboard-panel__title">Blood Group Registry</h3>
               <span className="dashboard-panel__badge">Donors</span>
             </div>
             <div className="blood-grid">
@@ -265,7 +261,7 @@ export default function Dashboard() {
           {/* Department Capacity */}
           <div className="dashboard-panel">
             <div className="dashboard-panel__header">
-              <h3 className="dashboard-panel__title">🩺 Doctors by Department</h3>
+              <h3 className="dashboard-panel__title">Doctors by Department</h3>
               <span className="dashboard-panel__badge">{specializationCounts.length} Depts</span>
             </div>
             <div className="department-list">
