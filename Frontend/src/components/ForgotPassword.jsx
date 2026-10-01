@@ -60,7 +60,7 @@ function ForgotPassword() {
       } else {
         setError(result.message || 'Email does not exist');
       }
-    } catch (err) {
+    } catch (error) {
       setError('No Patient found with this email Id');
     } finally {
       setLoading(false);
@@ -114,7 +114,7 @@ function ForgotPassword() {
       } else {
         setError(result.message || 'Password update failed');
       }
-    } catch (err) {
+    } catch (error) {
       setError('Password not updated due to server');
     } finally {
       setLoading(false);
