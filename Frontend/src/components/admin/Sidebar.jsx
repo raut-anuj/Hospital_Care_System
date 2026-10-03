@@ -3,9 +3,11 @@ import { NavLink } from "react-router-dom";
 import "../../styles/Sidebar.css";
 
 const menuItems = [
-  { name: "Dashboard", path: "/admin", exact: true },
-  { name: "Doctors", path: "/admin/doctors" },
-  { name: "Patients", path: "/admin/patients" },
+  { name: "Dashboard",    path: "/admin",              exact: true },
+  { name: "Doctors",      path: "/admin/doctors" },
+  { name: "Patients",     path: "/admin/patients" },
+  { name: "Appointments", path: "/admin/appointments" },
+  { name: "Billing",      path: "/admin/bills" },
 ];
 
 export default function Sidebar() {
