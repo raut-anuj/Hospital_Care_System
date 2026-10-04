@@ -6,6 +6,7 @@ const menuItems = [
   { name: "Dashboard", path: "/doctor", exact: true },
   { name: "Appointment List", path: "/doctor/AppointmentList" },
   { name: "Appointment History", path: "/doctor/AppointmentHistory" },
+  { name: "Profile", path: "/doctor/profile" },
 ];
 
 export default function DoctorSidebar() {
