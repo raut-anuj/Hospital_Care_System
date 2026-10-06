@@ -86,12 +86,14 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const registerUser = asyncHandler(async (req, res) => {
 
-  const { name, password, email, confirmPassword, sex, gender, age } = req.body;
+  const { name, password, email, confirmPassword, sex, gender, age, address, bloodgroup, bloodGroup, contactNumber, phone } = req.body;
   const patientGender = sex || gender;
+  const patientBloodgroup = bloodgroup || bloodGroup;
+  const patientContact = contactNumber || phone;
 
   // basic presence validation
   if (!name || !password || !email || !confirmPassword || !patientGender || age === undefined || age === "") {
-    throw new ApiError(400, "Fill all the fields (name, email, age, gender, password, confirmPassword)");
+    throw new ApiError(400, "Fill all the required fields (name, email, age, gender, password, confirmPassword)");
   }
 
   if (name.trim() === "") {
@@ -148,6 +150,9 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     gender: patientGender,
     age: numericAge,
+    address: address ? address.trim() : "",
+    bloodgroup: patientBloodgroup ? patientBloodgroup.trim() : "",
+    contactNumber: patientContact ? (typeof patientContact === "number" ? patientContact : Number(patientContact) || undefined) : undefined,
   });
 
   // response
@@ -277,22 +282,79 @@ const changeCurrentPassword = asyncHandler(async(req, res)=>{
 
 });
 
-const getMyBills = asyncHandler(async(req, res)=>{
-    const patient = await Patient.findById(req.params.id)
+const getMyBills = asyncHandler(async(req, res)=> {
+    const patient = await Patient.findById(req.user?._id);
     if(!patient)
-        throw new ApiError(400, "Invalid Patient.")
+        throw new ApiError(400, "Patient not found.");
 
-    const bill = await Bill.find({
-        patientId: patient.id
+    const bills = await Bill.find({
+        patientId: patient._id
     })
-
-    if( bill.length == 0 )
-        throw new ApiError(400, "No Payment found.")
+    .populate({
+        path: "appointmentId",
+        select: "date time status amount",
+        populate: {
+            path: "doctorId",
+            select: "name specialization fee"
+        }
+    })
+    .sort({ createdAt: -1 });
 
     return res
     .status(200)
-    .json(new ApiResponse(200, bill, "Payments."))
+    .json(new ApiResponse(200, bills, "Bills fetched successfully."));
 });
+
+const payBill = asyncHandler(async(req, res) => {
+    const { billId, method } = req.body;
+
+    if (!billId || !method) {
+        throw new ApiError(400, "Bill ID and payment method are required");
+    }
+
+    const patient = await Patient.findById(req.user?._id);
+    if (!patient) {
+        throw new ApiError(400, "Patient not found");
+    }
+
+    const bill = await Bill.findOne({ _id: billId, patientId: patient._id });
+    if (!bill) {
+        throw new ApiError(404, "Bill not found");
+    }
+
+    if (bill.billStatus === "PAID") {
+        throw new ApiError(400, "This bill is already paid");
+    }
+
+    // Create payment record
+    const payment = await Payment.create({
+        patientId: patient._id,
+        billId: bill._id,
+        amount: bill.totalAmount,
+        method: method,
+        status: "SUCCESS"
+    });
+
+    // Update bill status to PAID
+    bill.paidAmount = bill.totalAmount;
+    bill.billStatus = "PAID";
+    await bill.save();
+
+    // Populate appointment & doctor details for receipt
+    const updatedBill = await Bill.findById(bill._id).populate({
+        path: "appointmentId",
+        select: "date time status amount",
+        populate: {
+            path: "doctorId",
+            select: "name specialization fee"
+        }
+    });
+
+    return res.status(200).json(
+        new ApiResponse(200, { bill: updatedBill, payment }, "Payment completed successfully")
+    );
+});
+
 
 const getPaymentHistory = asyncHandler(async(req, res)=>{
     const patient = await Patient.findById(req.params.id)
@@ -441,13 +503,26 @@ const createAppointment = asyncHandler(async (req, res) => {
     });
   }
 
+  const doctorFee = Number(doctor.fee) || 1000;
+  const totalBillAmount = doctorFee + 300;
+
   const newAppointment = await Appointment.create({
-  patientId: patient._id,
-  doctorId: doctor._id,
-  date: new Date(date),
-  time: time,
-  amount: doctor.fee || 1000,
-});
+    patientId: patient._id,
+    doctorId: doctor._id,
+    date: new Date(date),
+    time: time,
+    amount: totalBillAmount,
+  });
+
+  // Automatically generate an unpaid bill for this appointment
+  await Bill.create({
+    patientId: patient._id,
+    appointmentId: newAppointment._id,
+    totalAmount: totalBillAmount,
+    paidAmount: 0,
+    billStatus: "UNPAID",
+  });
+
 
   const savedAppointment = await Appointment.findById(newAppointment._id)
     .populate("patientId", "name age email gender")
@@ -473,25 +548,31 @@ const getProfile = asyncHandler(async(req,res)=>{
     .json(new ApiResponse(200, patient, {}))
 });
 
-const updateProfile = asyncHandler(async(req,res)=>{
-    const{ email, contactNumber, age, address }=req.body
+const updateProfile = asyncHandler(async (req, res) => {
+  const { name, contactNumber, age, address, bloodgroup, gender } = req.body;
 
-   const patient = await Patient.findOne({email})
+  const patient = await Patient.findById(req.user?._id);
 
-    if(!patient)
-        throw new ApiError(400, "patient not found")
+  if (!patient) {
+    throw new ApiError(404, "Patient not found");
+  }
 
-        patient.contactNumber = contactNumber
-        patient.age = age
-        patient.address = address
+  if (name) patient.name = name;
+  if (contactNumber !== undefined) patient.contactNumber = contactNumber;
+  if (age !== undefined) patient.age = age;
+  if (address !== undefined) patient.address = address;
+  if (bloodgroup) patient.bloodgroup = bloodgroup;
+  if (gender) patient.gender = gender;
 
-        await patient.save()
+  await patient.save({ validateBeforeSave: false });
 
-   res.status(200).json(new ApiResponse(200, {
-        contactNumber: patient.contactNumber,
-        age: patient.age,
-        address: patient.address
-    }, "Details Updated"));
+  const updatedPatient = await Patient.findById(patient._id).select(
+    "-password -refreshToken"
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedPatient, "Profile details updated successfully"));
 });
 
 const getAppointments =asyncHandler(async(req,res)=>{
@@ -589,6 +670,9 @@ const cancelAppointment =asyncHandler(async(req,res)=>{
     //    Agar tum sirf ek appointment delete karna chahte ho
     //    const cancelApp = await Appointment.findByIdAndDelete(appointmentId)
 
+    // Also delete unpaid bills linked to this patient (orphaned bills cause N/A display)
+    await Bill.deleteMany({ patientId: patient._id, billStatus: "UNPAID" });
+
     if(cancelApp.deletedCount === 0)
     {
         return res.status(200).json({
@@ -603,6 +687,21 @@ const cancelAppointment =asyncHandler(async(req,res)=>{
                 .status(200)
                 .json(new ApiResponse(200, {}, "Appointments canceled."))
             }
+});
+
+const getMedicalRecords = asyncHandler(async (req, res) => {
+    const patientId = req.user?._id || req.patient?._id;
+    if (!patientId) {
+        throw new ApiError(401, "Unauthorized");
+    }
+
+    const records = await MedicalRecord.find({ patientId })
+        .populate("doctorId", "name specialization")
+        .sort({ date: -1 });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, records, "Medical records fetched successfully"));
 });
 
 export {
@@ -623,6 +722,8 @@ export {
     createAppointment,
     appointment,
     getMyBills,
+    payBill,
     getPaymentHistory,
-    forgotPassword
+    forgotPassword,
+    getMedicalRecords
 }
