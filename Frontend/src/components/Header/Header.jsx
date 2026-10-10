@@ -1,99 +1,112 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Sun, Moon } from "lucide-react";
-import "../../styles/Header.css";
 
-  export default function HospitalCareHeader({ mode = "public", showLogo = true }) {
-  const navigate = useNavigate();
-
-  //Auth0 ka logout function lo, but yahan usko logoutFromAuth0 naam se use karo.
-  const { isAuthenticated, logout: logoutFromAuth0 } = useAuth0();
-  const isLoggedIn = mode === "authenticated";
-
+export default function HospitalCareHeader() {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef();
+  const { logout: auth0Logout, isAuthenticated } = useAuth0();
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
 
   useEffect(() => {
+    function handleClick(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, []);
+
+  useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
-    } else {
+    } else {   
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
-    }
+    }     
   }, [darkMode]);
 
-  const toggleTheme = () => setDarkMode((prev) => !prev);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("user");
+  // Logout handler   
+const handleLogout = async () => {
+  try {
+    localStorage.clear();
+    sessionStorage.clear();
 
     if (isAuthenticated) {
-      logoutFromAuth0({
-        logoutParams: { returnTo: window.location.origin },
+      auth0Logout({
+        logoutParams: {
+          returnTo: window.location.origin + "/login",
+        },
       });
       return;
     }
 
-    navigate("/");
-  };
-
-  const showAuthButtons = mode === "public";
+    window.location.href = "/login";
+  } catch (err) {
+    console.error("Logout failed", err);
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "/login";
+  }
+};
 
   return (
-    <header className={`header ${!showLogo ? "header--no-logo" : ""}`}>
-      {showLogo && (mode === "public" || mode === "authenticated") && (
-        <button
-          type="button"
-          className="header__title"
-          onClick={() => navigate("/")}
-          aria-label="Go to home page"
-        >
-          WellSpring Medical
-        </button>
-      )}
+    <header className="bg-white dark:bg-gray-900 border-b shadow-sm px-6 py-4 flex items-center justify-between">
+      <h1 className="text-xl font-bold text-blue-700 dark:text-blue-300">
+        Hospital Care
+      </h1>
 
-      <div className="header__actions">
-        {mode === "theme-only" ? null : isLoggedIn ? (
-          <button onClick={handleLogout} className="header__logout">
-            Logout
+      <div className="flex items-center gap-4">
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+        >
+          Logout
+        </button>
+
+        {/* Theme Switcher */}
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setOpen(!open)}
+            className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label="Theme menu"
+          >
+            <svg
+              className="w-6 h-6 text-gray-700 dark:text-gray-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
           </button>
-        ) : (
-          showAuthButtons && (
-            <>
-              <button
-                onClick={() => navigate("/signup")}
-                className="header__signup"
-              >
-                Sign Up
-              </button>
 
+          {open && (
+            <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 border rounded-md shadow-lg z-20">
               <button
-                onClick={() => navigate("/login")}
-                className="header__login"
+                onClick={() => setDarkMode(false)}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100"
               >
-                Login
+                Light
               </button>
-            </>
-          )
-        )}
-
-        <button
-          onClick={toggleTheme}
-          className="header__theme-btn"
-          aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {darkMode ? (
-            <Sun size={20} className="header__theme-icon--sun" />
-          ) : (
-            <Moon size={20} className="header__theme-icon--moon" />
+              <button
+                onClick={() => setDarkMode(true)}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100"
+              >
+                Dark
+              </button>
+            </div>
           )}
-        </button>
+        </div>
       </div>
     </header>
   );

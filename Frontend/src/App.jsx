@@ -1,39 +1,26 @@
 import { Routes, Route } from "react-router-dom";
-import {
-  Login,
-  Signup,
-  ForgotPassword,
-  AdminLayout,
-  DoctorLayout,
-  PatientLayout,
-  Dashboard,
-  AdminAppointments,
-  AdminBills,
-  Patients,
-  AdminDoctors,
-  AppointmentList,
-  AppointmentHistory,
-  DoctorDashboard,
-  DoctorProfile,
-  PatientDashboard,
-  PatientAppointment,
-  PatientBills,
-  PatientProfile,
-  PatientMedicalRecords,
-  ProtectedRoute,
-  Unauthorized,
-  Home,
-  About,
-  Doctors,
-  Contact,
-} from "./components/index.js";
+import { Login, Signup } from "./components/index.js";
+import { ForgotPassword } from "./components/index.js";
+
+import { AdminLayout, DoctorLayout, PatientLayout } from "./components/index.js";
+
+//admin
+import { Dashboard, AdminAppointments, Patients, Doctors } from "./components/index.js";
+
+//doctor
+import { AppointmentList, DoctorDashboard, ScheduleAppointment } from "./components/index.js";
+
+//patient
+import { PatientDashboard } from "./components/index.js"
+import { PatientAppointment }from "./components/index.js";
+import { ProtectedRoute } from "./components/index.js";
+
+import { Unauthorized, Home } from "./components/index.js";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
 
       {/* Auth routes */}
       <Route path="/login" element={<Login />} />
@@ -50,10 +37,9 @@ export default function App() {
         }
       >
         <Route index element={<Dashboard />} />
-        <Route path="doctors" element={<AdminDoctors />} />
+        <Route path="doctors" element={<Doctors />} />
         <Route path="patients" element={<Patients />} />
         <Route path="appointments" element={<AdminAppointments />} />
-        <Route path="bills" element={<AdminBills />} />
       </Route>
 
       {/* Doctor routes */}
@@ -67,8 +53,7 @@ export default function App() {
       >
         <Route index element={<DoctorDashboard />} />
         <Route path="AppointmentList" element={<AppointmentList />} />
-        <Route path="AppointmentHistory" element={<AppointmentHistory />} />
-        <Route path="profile" element={<DoctorProfile />} />
+        <Route path="ScheduleAppointment" element={<ScheduleAppointment />} />
       </Route>
 
       {/* Patient routes */}
@@ -82,11 +67,12 @@ export default function App() {
       >
         <Route index element={<PatientDashboard />} />
         <Route path="appointment" element={<PatientAppointment />} />
-        <Route path="bills" element={<PatientBills />} />
-        <Route path="profile" element={<PatientProfile />} />
-        <Route path="medical-records" element={<PatientMedicalRecords />} />
       </Route>
+
       <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>
   );
 }
+
+//       <Route path="patients" element={<Patients />} />
+//         <Route path="appointments" element={<Appointments />} />

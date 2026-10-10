@@ -1,91 +1,212 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import "../../styles/Apointment.css";
-import API_URL from "../../api/api.js";
 
 export default function Appointments() {
-  const [search, setSearch] = useState("");
-  const token = localStorage.getItem("token");
+  const [appointments, setAppointments] = useState([
+    { id: 1, patient: "Rahul Sharma", doctor: "Dr. Mehta", date: "2026-04-22", time: "10:00 AM" },
+    { id: 2, patient: "Ankit Verma", doctor: "Dr. Khan", date: "2026-04-23", time: "12:00 PM" },
+  ]);
 
-  const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ["admin-appointments"],
-    enabled: Boolean(token),
-    queryFn: async () => {
-      const res = await fetch(`${API_URL}/api/v1/admin/appointmentsList`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Failed to fetch appointments");
-      return data?.data || [];
-    },
+  const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [editId, setEditId] = useState(null);
+
+  const [form, setForm] = useState({
+    patient: "",
+    doctor: "",
+    date: "",
+    time: "",
   });
 
   const filtered = appointments.filter((a) =>
-    (a.patientId?.name || "").toLowerCase().includes(search.toLowerCase())
+    a.patient.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (editId) {
+      setAppointments(
+        appointments.map((a) =>
+          a.id === editId ? { ...a, ...form } : a
+        )
+      );
+    } else {
+      setAppointments([
+        ...appointments,
+        { id: Date.now(), ...form },
+      ]);
+    }
+
+    setForm({ patient: "", doctor: "", date: "", time: "" });
+    setShowModal(false);
+    setEditId(null);
+  };
+
+  const handleEdit = (a) => {
+    setForm({
+      patient: a.patient,
+      doctor: a.doctor,
+      date: a.date,
+      time: a.time,
+    });
+    setEditId(a.id);
+    setShowModal(true);
+  };
+
+  const handleDelete = (id) => {
+    setAppointments(appointments.filter((a) => a.id !== id));
+  };
+
   return (
-    <div className="appointments-page">
-      <div className="appointments-header">
-        <h2 className="appointments-title">Appointments</h2>
+    <div className="p-4 bg-gray-100 dark:bg-gray-900 min-h-screen text-black dark:text-white">
+
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold">
+          Appointments
+        </h2>
+
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Add Appointment
+        </button>
       </div>
 
+      {/* Search */}
       <input
-        className="appointments-search"
+        className="w-full mb-4 p-2 border rounded bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white"
         placeholder="Search by patient..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      <div className="appointments-table-wrap">
-        <table className="appointments-table">
-          <thead className="appointments-table__head">
+      {/* Table */}
+      <div className="bg-white dark:bg-gray-800 shadow rounded-xl overflow-hidden">
+        <table className="w-full">
+
+          <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
-              <th>ID</th>
+              <th className="p-3">ID</th>
               <th>Patient</th>
               <th>Doctor</th>
               <th>Date</th>
               <th>Time</th>
-              <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {isLoading ? (
-              <tr>
-                <td colSpan="6" className="appointments-table__empty">Loading appointments...</td>
+            {filtered.map((a) => (
+              <tr key={a.id} className="border-t dark:border-gray-700">
+
+                <td className="p-3">{a.id}</td>
+                <td>{a.patient}</td>
+                <td>{a.doctor}</td>
+                <td>{a.date}</td>
+                <td>{a.time}</td>
+
+                <td className="space-x-2">
+                  <button
+                    onClick={() => handleEdit(a)}
+                    className="px-3 py-1 bg-yellow-400 rounded"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(a.id)}
+                    className="px-3 py-1 bg-red-500 text-white rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+
               </tr>
-            ) : filtered.length > 0 ? (
-              filtered.map((a, index) => (
-                <tr key={a._id || index} className="appointments-table__row">
-                  <td>{index + 1}</td>
-                  <td>{a.patientId?.name || "N/A"}</td>
-                  <td>{a.doctorId?.name || "N/A"}</td>
-                  <td>
-                    {a.date
-                      ? new Date(a.date).toLocaleDateString("en-IN", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })
-                      : "N/A"}
-                  </td>
-                  <td>{a.time || "N/A"}</td>
-                  <td>
-                     <span className={`status-pill status-pill--${a.status || "scheduled"}`}>
-                        {a.status || "scheduled"}
-                     </span>
-                  </td>
-                </tr>
-              ))
-            ) : (
-               <tr>
-                <td colSpan="6" className="appointments-table__empty">No appointments found.</td>
-              </tr>
-            )}
+            ))}
           </tbody>
+
         </table>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl w-96 text-black dark:text-white">
+
+            <h2 className="text-xl font-semibold mb-4">
+              {editId ? "Edit Appointment" : "Add Appointment"}
+            </h2>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+
+              <input
+                name="patient"
+                value={form.patient}
+                onChange={handleChange}
+                placeholder="Patient Name"
+                className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                required
+              />
+
+              <input
+                name="doctor"
+                value={form.doctor}
+                onChange={handleChange}
+                placeholder="Doctor Name"
+                className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                required
+              />
+
+              <input
+                name="date"
+                type="date"
+                value={form.date}
+                onChange={handleChange}
+                className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                required
+              />
+
+              <input
+                name="time"
+                type="time"
+                value={form.time}
+                onChange={handleChange}
+                className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                required
+              />
+
+              <div className="flex justify-end gap-2">
+
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded"
+                >
+                  {editId ? "Update" : "Add"}
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

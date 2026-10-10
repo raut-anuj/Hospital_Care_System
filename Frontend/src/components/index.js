@@ -3,17 +3,15 @@ import Input from './Input'
 import Login from './Login'
 import Signup from './Signup'
 import Home from '../pages/Home'
-import About from '../pages/About'
-import Doctors from '../pages/Doctors'
-import Contact from '../pages/Contact'
-// import Card from '../components/Card'
+import Card from '../components/Card'
 import Footer from '../components/Footer/Footer'
 import ForgotPassword from '../components/ForgotPassword'
 
+// import Card from "../components/admin/Card"
 import Navbar from "../components/admin/Navbar"
 import Sidebar from '../components/admin/Sidebar'
 import DoctorSidebar from "../components/doctor/DoctorSidebar"
-import PatientSidebar from "../components/patient/PatientSidebar"
+import PatientSidebar from "../components/paient/PatientSidebar"
 
 import Header from "../components/Header/Header"
 
@@ -22,21 +20,16 @@ import DoctorLayout from "../layout/DoctorLayout"
 import PatientLayout from "../layout/PatientLayout"
 
 import Dashboard from "../pages/admin/Dashboard";
-import AdminDoctors from "../pages/admin/Doctor";
+import Doctors from "../pages/admin/Doctor";
 import Patients from "../pages/admin/Patient";
-import AdminAppointments from "../pages/admin/Apointment";
-import AdminBills from "../pages/admin/AdminBills";
+import AdminAppointments from "../pages/admin/Apointment"
 
 import DoctorDashboard from "../pages/doctor/DoctorDashboard"
 import AppointmentList from "../pages/doctor/AppointmentList.jsx"
-import AppointmentHistory from "../pages/doctor/AppointmentHistory.jsx"
-import DoctorProfile from "../pages/doctor/DoctorProfile.jsx"
+import ScheduleAppointment from "../pages/doctor/ScheduleAppointment.jsx"
 
 import PatientAppointment from "../pages/patient/PatientAppointment"
 import PatientDashboard from "../pages/patient/PatientDashboard"
-import PatientBills from "../pages/patient/PatientBills.jsx"
-import PatientProfile from "../pages/patient/PatientProfile.jsx"
-import PatientMedicalRecords from "../pages/patient/PatientMedicalRecords.jsx"
 
 import ProtectedRoute from "../routes/ProtectedRoute"
 
@@ -44,16 +37,13 @@ import Unauthorized from  "../pages/Unauthorized.jsx"
 
 export {
     Home,
-    About,
-    Doctors,
-    Contact,
     Button,
     Footer,
     Input,
     Login,
     Signup,
     Header,
-    // Card,
+    Card,
     ForgotPassword,
 
     //admin
@@ -71,23 +61,18 @@ export {
 
     //pages--->admin
     Dashboard,
-    AdminDoctors,
+    Doctors,
     Patients,
     AdminAppointments,
-    AdminBills,
 
     //pages--->doctor
     DoctorDashboard,
     AppointmentList,
-    AppointmentHistory,
-    DoctorProfile,
+    ScheduleAppointment,
 
     //pages--->patient
     PatientDashboard,
     PatientAppointment,
-    PatientBills,
-    PatientProfile,
-    PatientMedicalRecords,
     PatientSidebar,
 
     ProtectedRoute,

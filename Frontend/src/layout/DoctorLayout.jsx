@@ -1,14 +1,13 @@
 import { Outlet } from "react-router-dom";
-import { Header, DoctorSidebar } from "../components/index.js";
-import "../styles/DoctorLayout.css";
+import { Header, Footer, DoctorSidebar } from "../components/index.js";
 
-export default function DoctorLayout() {
+export default function PatientLayout() {
   return (
-    <div className="doctor-layout">
+    <div className="flex h-screen">
       <DoctorSidebar />
 
-      <main className="doctor-layout__main">
-        <Header mode="authenticated" />
+      <main className="flex-1 p-6 overflow-y-auto">
+        <Header />
         <Outlet />
       </main>
     </div>

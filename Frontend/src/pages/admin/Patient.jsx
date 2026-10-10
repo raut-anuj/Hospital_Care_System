@@ -1,84 +1,89 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import "../../styles/Patient.css";
-import API_URL from "../../api/api.js";
+import React, { useState, useEffect } from "react";
 
-export default function Patients() {
+export default function Doctors() {
+  const [list, setList] = useState([]);
   const [search, setSearch] = useState("");
-  const [selectedPatient, setSelectedPatient] = useState(null);
-  const token = localStorage.getItem("token");
 
-  const { data: list = [], isLoading } = useQuery({
-    queryKey: ["admin-patients"],
-    queryFn: async () => {
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await fetch(`${API_URL}/api/v1/admin/patientsList`, {
-        headers,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Failed to fetch patients");
-      return data?.data || [];
-    },
-  });
+  useEffect(() => {
+    const fetchList = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:8000/api/v1/admin/patientsList?name=Admin"
+        );
 
+        const data = await res.json();
+        // console.log(data?.data);
+        
+        setList(data?.data || []);
+      } catch (err) {
+        console.log("Error ", err);
+      }
+    };
+    fetchList();
+  }, []);
+
+  // Search filter + Alphabetical sort
   const filteredPatients = list
-    .filter((doc) => doc.name?.toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  .filter((doc) =>
+    doc.name?.toLowerCase().includes(search.toLowerCase())
+  )
+  .sort((a, b) => a.name.localeCompare(b.name));
+  
 
   return (
-    <div className="patient-page">
-      <h2 className="patient-page__title">Patient List</h2>
+    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+      {/* Header */}
+      <h2 className="text-3xl font-semibold mb-6 text-gray-800 dark:text-white">
+        Patient List
+      </h2>
 
+      {/* Search */}
       <input
         type="text"
-        placeholder="Search patient..."
+        placeholder="Search doctor..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="patient-page__search"
+        className="w-full mb-4 p-2 border rounded-lg 
+        bg-white text-black border-gray-300
+        dark:bg-gray-800 dark:text-white dark:border-gray-600"
       />
 
-      <div className="patient-page__table-wrap">
-        <table className="patient-page__table">
-          <thead className="patient-page__thead">
+      {/* Table View */}
+      <div className="bg-white dark:bg-gray-800 shadow rounded-xl overflow-hidden mb-8">
+        <table className="w-full text-left">
+          <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
-              <th>ID</th>
-              <th>Patient Name</th>
-              <th>Age</th>
-              <th>Blood Group</th>
-              <th>Address</th>
+              <th className="p-3 text-gray-700 dark:text-gray-200">ID</th>
+              <th className="text-gray-700 dark:text-gray-200">Patient Name</th>
+              <th className="text-gray-700 dark:text-gray-200">Age</th>
+              <th className="text-gray-700 dark:text-gray-200">Address</th>
             </tr>
           </thead>
           <tbody>
-            {isLoading ? (
-              [1, 2].map((skeletonRow) => (
-                <tr key={`patient-skeleton-${skeletonRow}`} className="patient-page__row">
-                  <td><span className="table-skeleton table-skeleton--short" /></td>
-                  <td><span className="table-skeleton" /></td>
-                  <td><span className="table-skeleton" /></td>
-                  <td><span className="table-skeleton" /></td>
-                  <td><span className="table-skeleton" /></td>
-                </tr>
-              ))
-            ) : filteredPatients.length > 0 ? (
+            {filteredPatients.length > 0 ? (
               filteredPatients.map((doc, index) => (
-                <tr key={doc._id || index} className="patient-page__row">
-                  <td>{index + 1}</td>
-                  <td>
-                    <button
-                      className="admin-drawer-name-btn"
-                      onClick={() => setSelectedPatient(doc)}
-                    >
-                      {doc.name}
-                    </button>
+                <tr
+                  key={doc._id || index}
+                  className="border-t hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <td className="p-3 text-gray-800 dark:text-gray-100">
+                    {index + 1}
                   </td>
-                  <td>{doc.age || "N/A"}</td>
-                  <td>{doc.bloodgroup || doc.bloodGroup || "N/A"}</td>
-                  <td>{doc.address || "N/A"}</td>
+                  <td className="text-gray-800 dark:text-gray-100">{doc.name}</td>
+                  <td className="text-gray-800 dark:text-gray-100">
+                    {doc.age || "N/A"}
+                  </td>
+                  <td className="text-gray-800 dark:text-gray-100">
+                    {doc.address || "N/A"}
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="patient-page__empty">
+                <td
+                  colSpan="4"
+                  className="text-center p-3 text-gray-500 dark:text-gray-400"
+                >
                   No Patient found
                 </td>
               </tr>
@@ -87,70 +92,31 @@ export default function Patients() {
         </table>
       </div>
 
-      {/* Patient Detail Drawer */}
-      {selectedPatient && (
-        <>
-          <div
-            className="admin-drawer-overlay"
-            onClick={() => setSelectedPatient(null)}
-          />
-          <div className="admin-drawer">
-            <div className="admin-drawer__header">
-              <h3 className="admin-drawer__title">Patient Details</h3>
-              <button
-                className="admin-drawer__close"
-                onClick={() => setSelectedPatient(null)}
-              >
-                ✕
-              </button>
+      {/* List View */}
+      <div className="space-y-4">
+        {filteredPatients.length > 0 ? (
+          filteredPatients.map((doc) => (
+            <div
+              key={doc._id || doc.id}
+              className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow"
+            >
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                {doc.name}
+              </h3>
+              <p className="text-gray-700 dark:text-gray-200">
+                Age: {doc.age || "N/A"}
+              </p>
+              <p className="text-gray-700 dark:text-gray-200">
+                Address: {doc.address || "N/A"}
+              </p>
             </div>
-            <div className="admin-drawer__content">
-              <div className="admin-drawer__info-grid">
-                <div className="admin-drawer__info-item">
-                  <span className="admin-drawer__label">Name</span>
-                  <span className="admin-drawer__value">{selectedPatient.name || "N/A"}</span>
-                </div>
-                <div className="admin-drawer__info-item">
-                  <span className="admin-drawer__label">Email</span>
-                  <span className="admin-drawer__value">{selectedPatient.email || "N/A"}</span>
-                </div>
-                <div className="admin-drawer__info-item">
-                  <span className="admin-drawer__label">Age</span>
-                  <span className="admin-drawer__value">{selectedPatient.age || "N/A"}</span>
-                </div>
-                <div className="admin-drawer__info-item">
-                  <span className="admin-drawer__label">Gender</span>
-                  <span className="admin-drawer__value">{selectedPatient.gender || "N/A"}</span>
-                </div>
-                <div className="admin-drawer__info-item">
-                  <span className="admin-drawer__label">Blood Group</span>
-                  <span className="admin-drawer__value">
-                    {selectedPatient.bloodgroup || selectedPatient.bloodGroup || "N/A"}
-                  </span>
-                </div>
-                <div className="admin-drawer__info-item">
-                  <span className="admin-drawer__label">Phone Number</span>
-                  <span className="admin-drawer__value">
-                    {selectedPatient.contactNumber || "N/A"}
-                  </span>
-                </div>
-                <div className="admin-drawer__info-item">
-                  <span className="admin-drawer__label">Address</span>
-                  <span className="admin-drawer__value">{selectedPatient.address || "N/A"}</span>
-                </div>
-                <div className="admin-drawer__info-item">
-                  <span className="admin-drawer__label">Joined</span>
-                  <span className="admin-drawer__value">
-                    {selectedPatient.createdAt
-                      ? new Date(selectedPatient.createdAt).toLocaleDateString()
-                      : "N/A"}
-                  </span>
-                </div>
-              </div>
-            </div>
+          ))
+        ) : (
+          <div className="text-center p-3 text-gray-500 dark:text-gray-400">
+            No doctor found
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 }

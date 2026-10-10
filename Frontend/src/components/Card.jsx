@@ -1,9 +1,11 @@
 import React from "react";
-import '../styles/Card.css';
 
 export default function Card({ children, className = "", ...props }) {
   return (
-    <div className={`card ${className}`.trim()} {...props}>
+    <div
+      className={`rounded-xl shadow-md bg-white p-4 ${className}`}
+      {...props}
+    >
       {children}
     </div>
   );

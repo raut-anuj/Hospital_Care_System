@@ -1,46 +1,48 @@
-import React, { useId, useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
-import '../styles/Input.css';
+import React, {useId} from 'react'
 
-const Input = React.forwardRef(function Input(
-  { label, type = 'text', className = '', ...props },
-  ref
-) {
-  const id = useId();
-  const [showPassword, setShowPassword] = useState(false);
+const Input = React.forwardRef( function Input({
+    label,  //label = "Email"
+    type = "text",
+    className = "",
+    ...props
+  }, ref){
 
-  const isPasswordType = type === 'password';
-  const inputType = isPasswordType ? (showPassword ? 'text' : 'password') : type;
+    const id = useId(); 
 
-  return (
-    <div className="input-wrapper">
-      {label && (
-        <label className="input-label" htmlFor={id}>
-          {label}
-        </label>
-      )}
-      <div className="input-field-container">
-        <input
-          ref={ref}
-          type={inputType}
-          className={`input-field ${isPasswordType ? 'input-field-password' : ''} ${className}`.trim()}
-          {...props}
-          id={id}
-        />
-        {isPasswordType && (
-          <button
-            type="button"
-            className="password-toggle-btn"
-            onClick={() => setShowPassword((prev) => !prev)}
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
-            tabIndex={-1}
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-        )}
-      </div>
-    </div>
-  );
-});
+return(
+       <div className='w-full'>
+            {label && <label 
+            className='inline-block mb-1 pl-1' 
+            htmlFor={id}>
+                {label}
+            </label>
+            }
+            <input
+            ref={ref}  
+            type={type}
+            className={`px-3 py-2 rounded-lg bg-white text-black outline-none focus:bg-gray-50 duration-200 border border-gray-200 w-full ${className}`}
+            {...props}
+            id={id}
+            />
+        </div>
+    )
+})
 
-export default Input;
+export default Input
+
+
+// label nahi hai (falsy)
+// label = ""
+// // ya undefined / null
+
+// 👉 Result:
+
+// nothing (null)
+
+// ✔ kuch bhi render nahi hoga
+// ✔ error bhi nahi aayega
+// ✔ input normally render hoga
+
+
+// another way to write the label code
+// { label ? <label>{label}</label> : <span>No label</span> }

@@ -1,15 +1,15 @@
-import { Header, Sidebar } from "../components/index.js";
+import { Header,  Sidebar } from "../components/index.js";
 import { Outlet } from "react-router-dom";
-import "../styles/AdminLayout.css";
 
 export default function AdminLayout() {
   return (
-    <div className="admin-layout">
+    <div className="flex h-screen">
       <Sidebar />
-
-      <main className="admin-layout__main">
-        <Header mode="authenticated" />
+ 
+      <main className="flex-1 p-6 overflow-y-auto">
+        <Header />
         <Outlet />
+        {/* <Footer/> */}
       </main>
     </div>
   );

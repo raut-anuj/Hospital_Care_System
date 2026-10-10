@@ -1,7 +1,8 @@
-// aaj kh date sh [ peeche date ] tk, jitna bhi appoinments ha woh isme aye gh.
+// aaj kh date sh [ aga date ] tk, jitna bhi appoinments ha patients kh sath woh isme aye gh.
+
 import React, {useState, useEffect} from "react";
 
-export default function AppointmentList() {
+export default function ScheduleAppointment() {
 
 const [appointment, setAppointment] = useState([])
 
@@ -11,36 +12,34 @@ const [appointment, setAppointment] = useState([])
         const res = await fetch("http://localhost:8000/api/v1/doctor/getAllAppointments?drname=Dr.Kumar");
         const data = await res.json();
         console.log(data?.data)
-
         setAppointment(data?.data || []);
-
       } catch (err) {
         console.log("Error ", err);
       }
     };
     fetchAppointments();
   }, []);
- 
+
    const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const PastAppointments = appointment
+const futureAppointments = appointment
   .filter((a) => {
     const apptDate = new Date(a.date);
 
     // sirf date compare (time ignore)
-    return apptDate < today 
+    return apptDate >= today
 
-    console.log("FILTERED:", PastAppointments);
+    console.log("FILTERED:", futureAppointments);
 
   })
   .sort((a, b) => new Date(a.date) - new Date(b.date));
- 
+
   return (
     <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
 
       <h2 className="text-3xl font-semibold mb-6 text-gray-800 dark:text-white">
-        Patient Appointment List
+        Scheduled Appoiments
       </h2>
 
      <div className="bg-white dark:bg-gray-800 shadow rounded-xl overflow-hidden mb-8">
@@ -56,8 +55,8 @@ const PastAppointments = appointment
       </thead>
 
      <tbody>
-  {PastAppointments.length > 0 ? (
-    PastAppointments.map((a, index) => (
+  {futureAppointments.length > 0 ? (
+    futureAppointments.map((a, index) => (
       <tr
         key={a._id}
         className="border-t hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -106,13 +105,13 @@ const PastAppointments = appointment
     </tr>
   )}
 </tbody>
-    </table>
-    </div>
+</table>
+</div>
 
 {/* List View */}
     <div className="space-y-4">
-     {Array.isArray(PastAppointments) &&
-         PastAppointments.map((item) => (
+     {Array.isArray(futureAppointments) &&
+         futureAppointments.map((item) => (
           <div
             key={item._id || item.id}
             className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow"
@@ -130,5 +129,6 @@ const PastAppointments = appointment
         ))}
     </div>
     </div>
-    )};
+    );
+    }
 

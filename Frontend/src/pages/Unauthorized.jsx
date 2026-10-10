@@ -1,10 +1,8 @@
-import "../styles/Unauthorized.css";
-
 export default function Unauthorized() {
   return (
-    <div className="unauthorized-page">
-      <h1 className="unauthorized-title">🚫 Access Denied</h1>
-      <p className="unauthorized-text">You are not allowed to access this page.</p>
+    <div style={{ textAlign: "center", marginTop: "100px" }}>
+      <h1>🚫 Access Denied</h1>
+      <p>You are not allowed to access this page.</p>
     </div>
   );
 }

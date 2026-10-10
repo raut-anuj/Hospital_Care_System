@@ -1,19 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./styles/index.css";
+import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter, useNavigate } from "react-router-dom";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
 
 function Auth0ProviderWithNavigate({ children }) {
   const navigate = useNavigate();
 
   const onRedirectCallback = (appState) => {
-    navigate(appState?.returnTo || "/patient", 
-      { replace: true });
+    navigate(appState?.returnTo || "/patient", { replace: true });
   };
 
   return (
@@ -44,10 +40,8 @@ function AuthLoader({ children }) {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <QueryClientProvider client={queryClient}>
-      <Auth0ProviderWithNavigate>
-        <App />
-      </Auth0ProviderWithNavigate>
-    </QueryClientProvider>
+    <Auth0ProviderWithNavigate>
+      <App />
+    </Auth0ProviderWithNavigate>
   </BrowserRouter>
 );

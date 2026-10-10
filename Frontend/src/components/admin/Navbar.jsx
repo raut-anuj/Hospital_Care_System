@@ -1,11 +1,10 @@
-import React from 'react';
-import '../../styles/Navbar.css';
+import React from 'react'
 
 export default function Navbar() {
   return (
-    <div className="navbar-wrapper">
-      <h1 className="navbar-title">Dashboard</h1>
-      <p className="navbar-subtitle">Welcome back, Admin </p>
+    <div className="mb-6">
+      <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
+      <p className="text-gray-500">Welcome back, Admin </p>
     </div>
   );
 }

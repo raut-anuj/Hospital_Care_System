@@ -1,23 +1,22 @@
-import React from 'react';
-import '../styles/Button.css';
+import React from 'react'
 
 function Button({
   children,
   type = 'button',
-  textColor = 'button--text-white',
-  bgColor = 'button--bg-blue',
+  textColor = 'text-white',
+  bgColor = 'bg-blue-600',
   className = '',
   ...props
 }) {
   return (
     <button
-      type={type}
-      className={`button ${textColor} ${bgColor} ${className}`.trim()}
-      {...props}
+      type={type}   // 🔥 MOST IMPORTANT
+      className={`px-4 py-2 rounded-lg ${textColor} ${bgColor} ${className}`}
+      {...props}    // 🔥 yaha spread karo
     >
       {children}
     </button>
   );
 }
 
-export default Button;
+export default Button
